@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <title>Compare Bikes</title>
+    <style>
+      /* Add custom CSS for loading bikes and budget */
+      main {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+      }
+
+      select {
+        width: 100%;
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        margin-bottom: 15px;
+      }
+
+      #bikeSelection {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      #bikeSelection label {
+        flex-basis: 100%;
+      }
+
+      #bikeSelection select {
+        flex-basis: calc(50% - 10px);
+      }
+
+      #compareButton {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 16px;
+        margin-top: 15px;
+      }
+
+      #comparisonResult {
+        margin-top: 20px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+
+      .winner {
+        background-color: #c1f0c1;
+      }
+
+      .pros-cons {
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <img
+        src="/image/logo.png"
+        alt="WiselyWheel"
+        width="150mm"
+        height="100mm"
+      />
+      <nav>
+        <ul>
+          <li><a href="/index">Home</a></li>
+          <li><a href="/browse">Browse Bikes</a></li>
+          <li><a href="/compare">Compare Bikes</a></li>
+
+          <li><a href="/aboutus">About Us</a></li>
+          <li><a href="/logout">Logout</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <h3>Compare Bikes</h3>
+
+      <label for="budget">Choose Budget:</label>
+      <select id="price">
+        <option value="100000-200000">100000-200000</option>
+        <option value="20001-300000">20000 - 300000</option>
+        <option value="300001-300000">300001 - 400000</option>
+        <option value="400001-500000">400001-500000</option>
+      </select>
+
+      <div id="bikeSelection">
+        <label for="bike1">Select Bike 1:</label>
+        <select id="bike1"></select>
+
+        <label for="bike2">Select Bike 2:</label>
+        <select id="bike2"></select>
+      </div>
+
+      <button id="compareButton">Compare</button>
+
+      <div id="comparisonResult"></div>
+    </main>
+
+    <footer>
+      <p>&copy; 2024 WiselyWheel. All rights reserved.</p>
+    </footer>
+
+    <script>
+      async function populateBikeOptions(priceRange) {
+        try {
+          // Parse the price range to get minimum and maximum values
+          const [minPrice, maxPrice] = priceRange.split("-").map(Number);
+
+          const response = await fetch(`/api/bikefeatures`);
+          const bikes = await response.json();
+
+          // Filter bikes based on price
+          const filteredBikes = bikes.filter(
+            (bike) => bike.price >= minPrice && bike.price <= maxPrice
+          );
+
+          if (filteredBikes.length === 0) {
+            document.getElementById("comparisonResult").innerHTML =
+              "No bikes found within the selected price range.";
+            document.getElementById("bikeSelection").style.display = "none";
+            return;
+          }
+
+          const bike1Select = document.getElementById("bike1");
+          const bike2Select = document.getElementById("bike2");
+
+          bike1Select.innerHTML = ""; // Clear previous options
+          bike2Select.innerHTML = ""; // Clear previous options
+
+          filteredBikes.forEach((bike) => {
+            const option = document.createElement("option");
+            option.text = bike.variant_name;
+            option.value = bike._id;
+            bike1Select.add(option);
+            bike2Select.add(option.cloneNode(true));
+          });
+          document.getElementById("bikeSelection").style.display = "block";
+        } catch (error) {
+          console.error("Error fetching bike options:", error);
+        }
+      }
+
+      async function compareBikes() {
+        const bike1Id = document.getElementById("bike1").value;
+        const bike2Id = document.getElementById("bike2").value;
+
+        try {
+          const response = await fetch("/api/bikefeatures/compare", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ bikeIds: [bike1Id, bike2Id] }),
+          });
+          const bikes = await response.json();
+
+          const comparisonResultElement =
+            document.getElementById("comparisonResult");
+          comparisonResultElement.innerHTML = generateComparisonTable(bikes);
+        } catch (error) {
+          console.error("Error comparing bikes:", error);
+        }
+      }
+
+      function generateComparisonTable(bikes) {
+        let overallWinner = null;
+        let tableHtml = `
+          <h2>Comparison Result:</h2>
+          <table>
+            <tr>
+              <th>Feature</th>
+              <th>${bikes[0].variant_name}</th>
+              <th>${bikes[1].variant_name}</th>
+              <th>Winner</th>
+            </tr>
+            `;
+
+        for (const key in bikes[0]) {
+          if (
+            key !== "_id" &&
+            key !== "__v" &&
+            key !== "image_url" &&
+            key !== "variant_name"
+          ) {
+            const winner = getWinner(bikes, key, bikes[0][key], bikes[1][key]);
+            tableHtml += `
+              <tr>
+                <td>${key}</td>
+                <td>${bikes[0][key]}</td>
+                <td>${bikes[1][key]}</td>
+                <td class="${winner}">${winner}</td>
+              </tr>
+              `;
+            if (overallWinner === null || winner === "Tie") {
+              overallWinner = winner;
+            }
+          }
+        }
+
+        tableHtml += `</table>`;
+        tableHtml += `<p>Overall Winner: ${overallWinner}</p>`;
+
+        // Include pros and cons in the comparison result
+
+        return tableHtml;
+      }
+
+      function getWinner(bikes, feature, value1, value2) {
+        if (typeof value1 === "number" && typeof value2 === "number") {
+          return value1 > value2
+            ? bikes[0].variant_name
+            : value1 < value2
+            ? bikes[1].variant_name
+            : "Tie";
+        } else {
+          return value1 > value2
+            ? bikes[0].variant_name
+            : value1 < value2
+            ? bikes[1].variant_name
+            : "Tie";
+        }
+      }
+
+      const budgetSelect = document.getElementById("price");
+      budgetSelect.addEventListener("change", function () {
+        const selectedBudget = this.value;
+        populateBikeOptions(selectedBudget);
+      });
+
+      document
+        .getElementById("compareButton")
+        .addEventListener("click", compareBikes);
+    </script>
+  </body>
+</html>

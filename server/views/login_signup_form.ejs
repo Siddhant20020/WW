@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <style>
+      /* Existing styles */
+      body {
+        font-family: "Arial", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+
+      header {
+        background-color: #4abf44;
+        color: white;
+        text-align: center;
+        padding: 1rem;
+      }
+
+      nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      nav ul li {
+        display: inline;
+        margin-right: 20px;
+      }
+
+      .login-signup {
+        max-width: 400px;
+        margin: 50px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        text-align: center;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      label {
+        margin-top: 10px;
+        font-weight: bold;
+      }
+
+      input {
+        padding: 8px;
+        margin-top: 5px;
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      button {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+        width: 100%;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      .error {
+        color: red;
+        margin-top: 10px;
+        text-align: center;
+      }
+
+      /* New styles for popular bikes section */
+      .popular-bikes {
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+      }
+
+      .heading {
+        text-align: center;
+      }
+
+      .popular-bikes-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+      }
+
+      .box {
+        width: 30%;
+        padding: 10px;
+        background-color: #f9f9f9;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .box-img {
+        text-align: center;
+      }
+
+      .box-img img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 5px;
+      }
+
+      .box h3 {
+        text-align: center;
+        margin-top: 10px;
+      }
+
+      .box h5 {
+        text-align: center;
+        color: #666;
+      }
+    </style>
+    <title>WiselyWheel</title>
+  </head>
+  <body>
+    <header>
+      <img
+        src="/image/logo.png"
+        alt="WiselyWheel"
+        width="200rem"
+        height="150rem"
+      />
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/Browsebike.html">Browse Bikes</a></li>
+          <li><a href="/Comparebike.html">Compare Bikes</a></li>
+          <li><a href="/aboutus.html">About Us</a></li>
+        </ul>
+      </nav>
+    </header>
+    <% if (typeof bikeRankings !== 'undefined' && bikeRankings) { %>
+      <section class="popular-bikes" id="popular-bikes">
+        <div class="heading">
+          <h1>Popular Bikes</h1>
+        </div>
+        <div class="popular-bikes-container">
+          <% bikeRankings.slice(0, 5).forEach((bike, index) => { %>
+          <div class="box">
+            <div class="box-img">
+              <img src="<%= bike.bike.image %>" alt="Bike Image" />
+            </div>
+            <h3><%= index + 1 %>. <%= bike.bike.variant_name %></h3>
+            <h5>
+              Rating: <%= bike.averageRating.toFixed(1) %> | Total Ratings: <%=
+              bike.totalRatings %>
+            </h5>
+          </div>
+          <% }); %>
+        </div>
+      </section>
+      <% } %>
+      
+    <section class="login-signup">
+      <h2 id="formHeading">Login</h2>
+      <% if (error) { %>
+      <p class="error"><%= error %></p>
+      <% } %>
+
+      <!-- Login form -->
+      <form id="loginForm" action="/login" method="POST">
+        <!-- Login form fields -->
+        <label for="loginUsername">Username:</label>
+        <input type="text" id="loginUsername" name="username" required />
+        <label for="loginPassword">Password:</label>
+        <input
+          type="password"
+          id="loginPassword"
+          name="password"
+          autocomplete="current-password"
+          required
+        />
+        <button type="submit">Login</button>
+      </form>
+
+      <!-- Signup form -->
+      <form
+        id="signupForm"
+        action="/signup"
+        method="POST"
+        style="display: none"
+      >
+        <label for="signupUsername">Username:</label>
+        <input type="text" id="signupUsername" name="username" required />
+        <label for="signupPassword">Password:</label>
+        <input
+          type="password"
+          id="signupPassword"
+          name="password"
+          autocomplete="current-password"
+          required
+        />
+        <button type="submit">Signup</button>
+      </form>
+
+      <p id="formSwitchText">
+        Don't have an account? <a href="#" id="formSwitchLink">Register</a>
+      </p>
+
+      <!-- JavaScript to toggle between login and signup forms -->
+      <script>
+        const formHeading = document.getElementById("formHeading");
+        const formSwitchLink = document.getElementById("formSwitchLink");
+        const loginForm = document.getElementById("loginForm");
+        const signupForm = document.getElementById("signupForm");
+
+        formSwitchLink.addEventListener("click", (event) => {
+          event.preventDefault();
+          if (loginForm.style.display === "none") {
+            loginForm.style.display = "block";
+            signupForm.style.display = "none";
+            formHeading.textContent = "Login";
+            formSwitchText.textContent = "Don't have an account? ";
+            formSwitchLink.textContent = "Register";
+          } else {
+            loginForm.style.display = "none";
+            signupForm.style.display = "block";
+            formHeading.textContent = "Signup";
+            formSwitchText.textContent = "Already have an account? ";
+            formSwitchLink.textContent = "Login";
+          }
+        });
+      </script>
+    </section>
+  </body>
+</html>

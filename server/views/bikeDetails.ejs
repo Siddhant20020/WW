@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bike Details</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <style>
+      table {
+        margin-top: 5mm;
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      th,
+      td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
+
+      td {
+        border-left: 1px solid #dddddd;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <img
+        src="/image/logo.png"
+        alt="WiselyWheel"
+        width="150mm"
+        height="100mm"
+      />
+      <nav>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="/browse">Browse Bikes</a></li>
+        <li><a href="/compare">Compare Bikes</a></li>
+        <li><a href="/aboutus">About Us</a></li>
+        <li><a href="/logout">Logout</a></li>
+      </nav>
+    </header>
+
+    <!-- Rating form -->
+    <form id="ratingForm">
+      <label for="rating">Rate this bike:</label>
+      <select id="rating" name="rating">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+      </select>
+      <button type="submit">Submit Rating</button>
+    </form>
+
+    <table>
+      <tr>
+        <th>Bike Details</th>
+        <th>Value</th>
+      </tr>
+      <tr>
+        <td>Brand</td>
+        <td><%= bike.brand %></td>
+      </tr>
+      <tr>
+        <td>Variant Name</td>
+        <td><%= bike.variant_name %></td>
+      </tr>
+      <tr>
+        <td>Price</td>
+        <td><%= bike.price %></td>
+      </tr>
+      <tr>
+        <td>Engine Type</td>
+        <td><%= bike.engine_type %></td>
+      </tr>
+      <tr>
+        <td>Displacement</td>
+        <td><%= bike.displacement %></td>
+      </tr>
+      <tr>
+        <td>Max Torque</td>
+        <td><%= bike.max_torque %></td>
+      </tr>
+      <tr>
+        <td>Cooling System</td>
+        <td><%= bike.cooling_system %></td>
+      </tr>
+      <tr>
+        <td>Valve Per Cylinder</td>
+        <td><%= bike.valve_per_cylinder %></td>
+      </tr>
+      <tr>
+        <td>Starting</td>
+        <td><%= bike.starting %></td>
+      </tr>
+      <tr>
+        <td>Fuel Supply</td>
+        <td><%= bike.fuel_supply %></td>
+      </tr>
+      <tr>
+        <td>Clutch</td>
+        <td><%= bike.clutch %></td>
+      </tr>
+      <tr>
+        <td>Ignition</td>
+        <td><%= bike.ignition %></td>
+      </tr>
+      <tr>
+        <td>Mileage</td>
+        <td><%= bike.mileage %></td>
+      </tr>
+      <tr>
+        <td>Body Type</td>
+        <td><%= bike.bodytype %></td>
+      </tr>
+      <tr>
+        <td>0-100 Kmph(sec)</td>
+        <td><%= bike.zero_100Kmph_sec %></td>
+      </tr>
+      <tr>
+        <td>Peak Power</td>
+        <td><%= bike.peak_power %></td>
+      </tr>
+      <tr>
+        <td>Transmission</td>
+        <td><%= bike.transmission %></td>
+      </tr>
+    </table>
+
+    <% if (bike.image_url) { %>
+    <img src="<%= bike.image_url %>" alt="Bike Image" />
+    <% } %>
+    <a href="/">Back to Search</a>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const bikeId = urlParams.get("id");
+
+        fetch(`/api/bikefeatures/${bikeId}`)
+          .then((response) => response.json())
+          .then((bike) => {
+            const bikeDetailsContainer = document.getElementById("bikeDetails");
+            const table = document.createElement("table");
+            for (const key in bike) {
+              if (Object.hasOwnProperty.call(bike, key)) {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                  <th>${key}</th>
+                  <td>${bike[key]}</td>
+                `;
+                table.appendChild(row);
+              }
+            }
+            bikeDetailsContainer.appendChild(table);
+          })
+          .catch((error) =>
+            console.error("Error loading bike details:", error)
+          );
+
+        const ratingForm = document.getElementById("ratingForm");
+        ratingForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const formData = new FormData(ratingForm);
+          const rating = formData.get("rating");
+
+          try {
+            const response = await fetch("/api/bike/rate", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ bikeId: bikeId, rating }), // Pass the bikeId directly
+            });
+            if (response.ok) {
+              alert("Rating submitted successfully");
+              // Optionally, you can update the UI to reflect the new rating
+            } else {
+              const errorMessage = await response.text();
+              alert(`Error: ${errorMessage}`);
+            }
+          } catch (error) {
+            console.error("Error submitting rating:", error);
+            alert("Failed to submit rating. Please try again later.");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
