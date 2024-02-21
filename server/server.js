@@ -271,8 +271,8 @@ app.get('/api/bike/rankings', async (req, res) => {
       }
     ]);
 
-   
-    
+
+
     bikeRankings.sort((a, b) => b.averageRating - a.averageRating);
 
     res.json(bikeRankings);

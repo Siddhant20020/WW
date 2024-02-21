@@ -5,19 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/stylesheets/style.css" />
     <style>
- 
       body {
         font-family: "Arial", sans-serif;
         margin: 0;
         padding: 0;
         background-color: #f4f4f4;
-      }
-
-      header {
-        background-color: #4abf44;
-        color: white;
-        text-align: center;
-        padding: 1rem;
       }
 
       nav ul {
@@ -153,27 +145,27 @@
       </nav>
     </header>
     <% if (typeof bikeRankings !== 'undefined' && bikeRankings) { %>
-      <section class="popular-bikes" id="popular-bikes">
-        <div class="heading">
-          <h1>Popular Bikes</h1>
-        </div>
-        <div class="popular-bikes-container">
-          <% bikeRankings.slice(0, 5).forEach((bike, index) => { %>
-          <div class="box">
-            <div class="box-img">
-              <img src="<%= bike.bike.image %>" alt="Bike Image" />
-            </div>
-            <h3><%= index + 1 %>. <%= bike.bike.variant_name %></h3>
-            <h5>
-              Rating: <%= bike.averageRating.toFixed(1) %> | Total Ratings: <%=
-              bike.totalRatings %>
-            </h5>
+    <section class="popular-bikes" id="popular-bikes">
+      <div class="heading">
+        <h1>Popular Bikes</h1>
+      </div>
+      <div class="popular-bikes-container">
+        <% bikeRankings.slice(0, 5).forEach((bike, index) => { %>
+        <div class="box">
+          <div class="box-img">
+            <img src="<%= bike.bike.image %>" alt="Bike Image" />
           </div>
-          <% }); %>
+          <h3><%= index + 1 %>. <%= bike.bike.variant_name %></h3>
+          <h5>
+            Rating: <%= bike.averageRating.toFixed(1) %> | Total Ratings: <%=
+            bike.totalRatings %>
+          </h5>
         </div>
-      </section>
-      <% } %>
-      
+        <% }); %>
+      </div>
+    </section>
+    <% } %>
+
     <section class="login-signup">
       <h2 id="formHeading">Login</h2>
       <% if (error) { %>

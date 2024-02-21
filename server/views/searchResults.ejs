@@ -15,8 +15,32 @@
       }
 
       .search-results a {
-        display: block;
+        display: flex;
+        align-items: center;
         margin-bottom: 5mm;
+        text-decoration: none;
+        color: #333;
+      }
+
+      .search-results a img {
+        width: 100px; /* Adjust image width as needed */
+        height: auto;
+        margin-right: 10px;
+      }
+
+      .bike-info {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .bike-name {
+        font-size: 18px;
+        font-weight: bold;
+      }
+
+      .bike-price {
+        font-size: 16px;
+        color: #777;
       }
     </style>
     <title>Search Results</title>
@@ -30,11 +54,10 @@
         height="100mm"
       />
       <nav>
-        <li><a href="index.html">Home</a></li>
+        <li><a href="/index">Home</a></li>
         <li><a href="/browse">Browse Bikes</a></li>
         <li><a href="/compare">Compare Bikes</a></li>
         <li><a href="/aboutus">About Us</a></li>
-
         <li><a href="/logout">Logout</a></li>
       </nav>
     </header>
@@ -53,9 +76,15 @@
 
     <section class="search-results">
       <% searchResults.forEach(bike => { %>
-      <a href="/bikeDetails?id=<%= bike._id %>"
-        ><%= bike.variant_name %> - <%= bike.brand %></a
-      >
+      <a href="/bikeDetails?id=<%= bike._id %>">
+        <img src="<%= bike.image %>" alt="<%= bike.variant_name %>" />
+        <div class="bike-info">
+          <span class="bike-name"
+            ><%= bike.variant_name %> - <%= bike.brand %></span
+          >
+          <span class="bike-price">Rs <%= bike.price %></span>
+        </div>
+      </a>
       <% }); %>
     </section>
 

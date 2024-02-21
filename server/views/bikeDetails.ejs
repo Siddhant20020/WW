@@ -6,25 +6,98 @@
     <title>Bike Details</title>
     <link rel="stylesheet" href="/stylesheets/style.css" />
     <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      header {
+        background-color: Dark Bule;
+        color: #fff;
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      nav ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      nav ul li {
+        display: inline;
+        margin-right: 10px;
+      }
+
+      nav ul li a {
+        text-decoration: none;
+        color: #fff;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      img {
+        max-width: 100%;
+        display: block;
+        margin-bottom: 20px;
+      }
+
       table {
-        margin-top: 5mm;
-        border-collapse: collapse;
         width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
       }
 
       th,
       td {
-        border: 1px solid #dddddd;
-        text-align: left;
         padding: 8px;
-      }
-
-      td {
-        border-left: 1px solid #dddddd;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
       }
 
       th {
         background-color: #f2f2f2;
+      }
+
+      form {
+        margin-bottom: 20px;
+      }
+
+      select {
+        padding: 8px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+      button {
+        padding: 8px 20px;
+        font-size: 16px;
+        background-color: #4caf50;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      a {
+        text-decoration: none;
+        color: #007bff;
+      }
+
+      a:hover {
+        text-decoration: underline;
       }
     </style>
   </head>
@@ -37,106 +110,112 @@
         height="100mm"
       />
       <nav>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="/browse">Browse Bikes</a></li>
-        <li><a href="/compare">Compare Bikes</a></li>
-        <li><a href="/aboutus">About Us</a></li>
-        <li><a href="/logout">Logout</a></li>
+        <ul>
+          <li><a href="">Home</a></li>
+          <li><a href="/browse">Browse Bikes</a></li>
+          <li><a href="/compare">Compare Bikes</a></li>
+          <li><a href="/aboutus">About Us</a></li>
+          <li><a href="/logout">Logout</a></li>
+        </ul>
       </nav>
     </header>
 
-    <!-- Rating form -->
-    <form id="ratingForm">
-      <label for="rating">Rate this bike:</label>
-      <select id="rating" name="rating">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-      </select>
-      <button type="submit">Submit Rating</button>
-    </form>
+    <div class="container">
+      <% if (bike.image_url) { %>
+      <img src="<%= bike.image %>" alt="Bike Image" />
+      <% } %>
 
-    <table>
-      <tr>
-        <th>Bike Details</th>
-        <th>Value</th>
-      </tr>
-      <tr>
-        <td>Brand</td>
-        <td><%= bike.brand %></td>
-      </tr>
-      <tr>
-        <td>Variant Name</td>
-        <td><%= bike.variant_name %></td>
-      </tr>
-      <tr>
-        <td>Price</td>
-        <td><%= bike.price %></td>
-      </tr>
-      <tr>
-        <td>Engine Type</td>
-        <td><%= bike.engine_type %></td>
-      </tr>
-      <tr>
-        <td>Displacement</td>
-        <td><%= bike.displacement %></td>
-      </tr>
-      <tr>
-        <td>Max Torque</td>
-        <td><%= bike.max_torque %></td>
-      </tr>
-      <tr>
-        <td>Cooling System</td>
-        <td><%= bike.cooling_system %></td>
-      </tr>
-      <tr>
-        <td>Valve Per Cylinder</td>
-        <td><%= bike.valve_per_cylinder %></td>
-      </tr>
-      <tr>
-        <td>Starting</td>
-        <td><%= bike.starting %></td>
-      </tr>
-      <tr>
-        <td>Fuel Supply</td>
-        <td><%= bike.fuel_supply %></td>
-      </tr>
-      <tr>
-        <td>Clutch</td>
-        <td><%= bike.clutch %></td>
-      </tr>
-      <tr>
-        <td>Ignition</td>
-        <td><%= bike.ignition %></td>
-      </tr>
-      <tr>
-        <td>Mileage</td>
-        <td><%= bike.mileage %></td>
-      </tr>
-      <tr>
-        <td>Body Type</td>
-        <td><%= bike.bodytype %></td>
-      </tr>
-      <tr>
-        <td>0-100 Kmph(sec)</td>
-        <td><%= bike.zero_100Kmph_sec %></td>
-      </tr>
-      <tr>
-        <td>Peak Power</td>
-        <td><%= bike.peak_power %></td>
-      </tr>
-      <tr>
-        <td>Transmission</td>
-        <td><%= bike.transmission %></td>
-      </tr>
-    </table>
+      <!-- Rating form -->
+      <form id="ratingForm">
+        <label for="rating">Rate this bike:</label>
+        <select id="rating" name="rating">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+        <button type="submit">Submit Rating</button>
+      </form>
 
-    <% if (bike.image_url) { %>
-    <img src="<%= bike.image_url %>" alt="Bike Image" />
-    <% } %>
-    <a href="/">Back to Search</a>
+      <table>
+        <tr>
+          <th>Bike Details</th>
+          <th>Value</th>
+        </tr>
+        <tr>
+          <td>Brand</td>
+          <td><%= bike.brand %></td>
+        </tr>
+        <tr>
+          <td>Variant Name</td>
+          <td><%= bike.variant_name %></td>
+        </tr>
+        <tr>
+          <td>Price</td>
+          <td><%= bike.price %></td>
+        </tr>
+        <tr>
+          <td>Engine Type</td>
+          <td><%= bike.engine_type %></td>
+        </tr>
+        <tr>
+          <td>Displacement</td>
+          <td><%= bike.displacement %></td>
+        </tr>
+        <tr>
+          <td>Max Torque</td>
+          <td><%= bike.max_torque %></td>
+        </tr>
+        <tr>
+          <td>Cooling System</td>
+          <td><%= bike.cooling_system %></td>
+        </tr>
+        <tr>
+          <td>Valve Per Cylinder</td>
+          <td><%= bike.valve_per_cylinder %></td>
+        </tr>
+        <tr>
+          <td>Starting</td>
+          <td><%= bike.starting %></td>
+        </tr>
+        <tr>
+          <td>Fuel Supply</td>
+          <td><%= bike.fuel_supply %></td>
+        </tr>
+        <tr>
+          <td>Clutch</td>
+          <td><%= bike.clutch %></td>
+        </tr>
+        <tr>
+          <td>Ignition</td>
+          <td><%= bike.ignition %></td>
+        </tr>
+        <tr>
+          <td>Mileage</td>
+          <td><%= bike.mileage %></td>
+        </tr>
+        <tr>
+          <td>Body Type</td>
+          <td><%= bike.bodytype %></td>
+        </tr>
+        <tr>
+          <td>0-100 Kmph(sec)</td>
+          <td><%= bike.zero_100Kmph_sec %></td>
+        </tr>
+        <tr>
+          <td>Peak Power</td>
+          <td><%= bike.peak_power %></td>
+        </tr>
+        <tr>
+          <td>Transmission</td>
+          <td><%= bike.transmission %></td>
+        </tr>
+      </table>
+
+      <a href="/">Back to Search</a>
+    </div>
+
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -145,7 +224,7 @@
         fetch(`/api/bikefeatures/${bikeId}`)
           .then((response) => response.json())
           .then((bike) => {
-            const bikeDetailsContainer = document.getElementById("bikeDetails");
+            const bikeDetailsContainer = document.querySelector(".container");
             const table = document.createElement("table");
             for (const key in bike) {
               if (Object.hasOwnProperty.call(bike, key)) {
@@ -157,7 +236,10 @@
                 table.appendChild(row);
               }
             }
-            bikeDetailsContainer.appendChild(table);
+            bikeDetailsContainer.insertBefore(
+              table,
+              bikeDetailsContainer.lastElementChild
+            );
           })
           .catch((error) =>
             console.error("Error loading bike details:", error)
