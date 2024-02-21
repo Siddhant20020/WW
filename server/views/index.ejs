@@ -318,20 +318,7 @@
         fetch(`/api/bikefeatures/brand/${brand}`)
           .then((response) => response.json())
           .then((bikes) => {
-            const optionsContainer = document.getElementById("bikeOptions");
-            if (optionsContainer) {
-              optionsContainer.innerHTML = "";
-              bikes.forEach((bike) => {
-                const button = document.createElement("button");
-                button.textContent = bike.variant_name;
-                button.onclick = () => {
-                  window.location.href = `/bikeDetails?id=${bike._id}`;
-                };
-                optionsContainer.appendChild(button);
-              });
-            } else {
-              console.error("Element with ID 'bikeOptions' not found.");
-            }
+            displayBikes(bikes);
           })
           .catch((error) =>
             console.error("Error loading bikes by brand:", error)
