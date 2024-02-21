@@ -4,7 +4,6 @@ const path = require('path');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-
 const app = express();
 const PORT = 3000;
 const UserModel = require('./model/users');
