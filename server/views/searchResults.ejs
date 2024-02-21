@@ -5,32 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/stylesheets/style.css" />
     <style>
+      /* CSS styles for the search button */
       #searchForm {
         text-align: center;
         margin-bottom: 3mm;
       }
 
-      .search-results {
-        margin-left: 5mm;
+      #searchButton {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4caf50;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
       }
 
-      .search-results a {
-        display: flex;
-        align-items: center;
-        margin-bottom: 5mm;
-        text-decoration: none;
-        color: #333;
+      #searchButton:hover {
+        background-color: #45a049;
       }
 
-      .search-results a img {
-        width: 100px; /* Adjust image width as needed */
+      /* CSS styles for the brand logo */
+      #brandLogo {
+        display: none;
+        margin-top: 10px;
+        text-align: center;
+      }
+
+      #brandLogo img {
+        width: 100px;
         height: auto;
-        margin-right: 10px;
       }
 
-      .bike-info {
+      /* CSS styles for search result boxes */
+      .search-results {
         display: flex;
-        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .bike-box {
+        margin: 10px;
+        padding: 10px;
+        width: 250px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+        background-color: #fff;
+      }
+
+      .bike-box:hover {
+        transform: translateY(-5px);
+      }
+
+      .bike-box img {
+        width: 100%;
+        height: auto;
+        margin-bottom: 10px;
       }
 
       .bike-name {
@@ -71,20 +104,26 @@
         id="bikeSearchInput"
         placeholder="Search another bike"
       />
-      <button type="submit">Search</button>
+      <button type="submit" id="searchButton">Search</button>
     </form>
 
+    <!-- Brand logo section -->
+    <div id="brandLogo"></div>
+
+    <!-- Search results section -->
     <section class="search-results">
       <% searchResults.forEach(bike => { %>
-      <a href="/bikeDetails?id=<%= bike._id %>">
-        <img src="<%= bike.image %>" alt="<%= bike.variant_name %>" />
-        <div class="bike-info">
-          <span class="bike-name"
-            ><%= bike.variant_name %> - <%= bike.brand %></span
-          >
-          <span class="bike-price">Rs <%= bike.price %></span>
-        </div>
-      </a>
+      <div class="bike-box">
+        <a href="/bikeDetails?id=<%= bike._id %>">
+          <img src="<%= bike.image %>" alt="<%= bike.variant_name %>" />
+          <div class="bike-info">
+            <span class="bike-name"
+              ><%= bike.variant_name %> - <%= bike.brand %></span
+            >
+            <span class="bike-price">Rs <%= bike.price %></span>
+          </div>
+        </a>
+      </div>
       <% }); %>
     </section>
 
@@ -95,6 +134,8 @@
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const searchForm = document.getElementById("searchForm");
+        const searchButton = document.getElementById("searchButton");
+        const brandLogo = document.getElementById("brandLogo");
 
         searchForm.addEventListener("submit", function (event) {
           event.preventDefault();
@@ -102,6 +143,25 @@
             .getElementById("bikeSearchInput")
             .value.trim()
             .toLowerCase();
+
+          // Fetch brand logo URL based on search term
+          fetch(`/api/brandLogo?searchTerm=${searchTerm}`)
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.logoUrl) {
+                // Display brand logo
+                brandLogo.innerHTML = `<img src="${data.logoUrl}" alt="Brand Logo" />`;
+                brandLogo.style.display = "block";
+              } else {
+                // Hide brand logo if not found
+                brandLogo.style.display = "none";
+              }
+            })
+            .catch((error) =>
+              console.error("Error fetching brand logo:", error)
+            );
+
+          // Redirect to search results page
           window.location.href = `/searchResults?searchTerm=${searchTerm}`;
         });
       });

@@ -70,10 +70,10 @@ mongoose.connect('mongodb://localhost:27017/WiselyWheel', {
 
 app.use('/api/bikefeatures', bikeRouter);
 
-// Register the middleware to fetch bike rankings
+
 app.use(fetchBikeRankings);
 
-// Landing page route (login/signup)
+
 app.get('/', (req, res) => {
   if (req.session.user) {
     res.render('index', { bikeRankings: res.locals.bikeRankings });
