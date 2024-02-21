@@ -11,7 +11,7 @@ const BikeRatingModel = require('./model/bikeRatings');
 const BikeModel = require('./model/bikes');
 const bikeRouter = require('./routes/bikes');
 
-// Middleware function to fetch bike rankings
+
 const fetchBikeRankings = async (req, res, next) => {
   try {
     const bikeRankings = await BikeRatingModel.aggregate([
