@@ -271,7 +271,8 @@ app.get('/api/bike/rankings', async (req, res) => {
       }
     ]);
 
-    // Sort the bike rankings based on average rating (descending order)
+   
+    
     bikeRankings.sort((a, b) => b.averageRating - a.averageRating);
 
     res.json(bikeRankings);
