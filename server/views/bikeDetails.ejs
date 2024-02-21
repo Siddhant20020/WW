@@ -99,6 +99,41 @@
       a:hover {
         text-decoration: underline;
       }
+
+      /* Rating CSS */
+      .rating-container {
+        margin-bottom: 20px;
+      }
+
+      .rating-container label {
+        margin-right: 10px;
+      }
+
+      .rating-container select {
+        padding: 8px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+      .rating-container button {
+        padding: 8px 20px;
+        font-size: 16px;
+        background-color: #4caf50;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .rating-container button:hover {
+        background-color: #45a049;
+      }
+
+      .rating {
+        margin-top: 10px;
+        font-size: 18px;
+      }
     </style>
   </head>
   <body>
@@ -126,17 +161,21 @@
       <% } %>
 
       <!-- Rating form -->
-      <form id="ratingForm">
-        <label for="rating">Rate this bike:</label>
-        <select id="rating" name="rating">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-        </select>
-        <button type="submit">Submit Rating</button>
-      </form>
+      <div class="rating-container">
+        <form id="ratingForm">
+          <label for="rating">Rate this bike:</label>
+          <select id="rating" name="rating">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+          <button type="submit">Submit Rating</button>
+        </form>
+
+        <div class="rating" id="ratingDisplay"></div>
+      </div>
 
       <table>
         <tr>
@@ -221,30 +260,41 @@
         const urlParams = new URLSearchParams(window.location.search);
         const bikeId = urlParams.get("id");
 
-        fetch(`/api/bikefeatures/${bikeId}`)
-          .then((response) => response.json())
-          .then((bike) => {
-            const bikeDetailsContainer = document.querySelector(".container");
-            const table = document.createElement("table");
-            for (const key in bike) {
-              if (Object.hasOwnProperty.call(bike, key)) {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                  <th>${key}</th>
-                  <td>${bike[key]}</td>
-                `;
-                table.appendChild(row);
-              }
+        // Function to fetch and display the rating
+        const fetchRating = async () => {
+          try {
+            const response = await fetch(`/api/bike/rating/${bikeId}`);
+            if (response.ok) {
+              const rating = await response.text();
+              const ratingDisplay = document.getElementById("ratingDisplay");
+              ratingDisplay.textContent = `Average Rating: ${rating}`;
+            } else {
+              console.error("Failed to fetch rating");
             }
-            bikeDetailsContainer.insertBefore(
-              table,
-              bikeDetailsContainer.lastElementChild
-            );
-          })
-          .catch((error) =>
-            console.error("Error loading bike details:", error)
-          );
+          } catch (error) {
+            console.error("Error fetching rating:", error);
+          }
+        };
 
+        fetchRating(); // Call the function when the page loads
+
+        // Function to save the user's rating locally
+        const saveRatingLocally = (rating) => {
+          localStorage.setItem(`bikeRating_${bikeId}`, rating);
+        };
+
+        // Function to get the user's rating from local storage
+        const getRatingLocally = () => {
+          return localStorage.getItem(`bikeRating_${bikeId}`);
+        };
+
+        // Check if the user has already rated the bike and set the select value accordingly
+        const userRating = getRatingLocally();
+        if (userRating) {
+          document.getElementById("rating").value = userRating;
+        }
+
+        // Submit rating form
         const ratingForm = document.getElementById("ratingForm");
         ratingForm.addEventListener("submit", async (event) => {
           event.preventDefault();
@@ -257,11 +307,12 @@
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ bikeId: bikeId, rating }), // Pass the bikeId directly
+              body: JSON.stringify({ bikeId: bikeId, rating }),
             });
             if (response.ok) {
               alert("Rating submitted successfully");
-              // Optionally, you can update the UI to reflect the new rating
+              fetchRating(); // Update the displayed rating
+              saveRatingLocally(rating); // Save the rating locally
             } else {
               const errorMessage = await response.text();
               alert(`Error: ${errorMessage}`);
