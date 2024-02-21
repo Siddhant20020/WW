@@ -4,7 +4,6 @@ const path = require('path');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-
 const app = express();
 const PORT = 3000;
 const UserModel = require('./model/users');
@@ -12,7 +11,7 @@ const BikeRatingModel = require('./model/bikeRatings');
 const BikeModel = require('./model/bikes');
 const bikeRouter = require('./routes/bikes');
 
-// Middleware function to fetch bike rankings
+
 const fetchBikeRankings = async (req, res, next) => {
   try {
     const bikeRankings = await BikeRatingModel.aggregate([
