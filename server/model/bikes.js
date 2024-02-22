@@ -18,7 +18,8 @@ const bikefeatureSchema = new mongoose.Schema({
   "zero_100Kmph_sec": "String",
   "peak_power": "String",
   "transmission": "String",
-  "brand": "String"
+  "brand": "String",
+  "url": "String"
 });
 
 const BikeFeature = mongoose.model('BikeFeature', bikefeatureSchema);

@@ -143,6 +143,22 @@
         margin-top: 10px;
         font-size: 18px;
       }
+      url.bike-image {
+        width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 20px;
+        perspective: 1000px;
+        cursor: pointer;
+
+        .container {
+          max-width: 100%;
+          margin: 0 auto;
+          padding: 20px;
+        }
+      }
     </style>
   </head>
   <body>
@@ -155,7 +171,7 @@
       />
       <nav>
         <ul>
-          <li><a href="">Home</a></li>
+          <li><a href="/index">Home</a></li>
           <li><a href="/browse">Browse Bikes</a></li>
           <li><a href="/compare">Compare Bikes</a></li>
           <li><a href="/aboutus">About Us</a></li>
@@ -165,8 +181,8 @@
     </header>
 
     <div class="container">
-      <% if (bike.image_url) { %>
-      <img src="<%= bike.image %>" alt="Bike Image" />
+      <% if (bike.url) { %>
+      <img src="<%= bike.url %>" alt="Bike Image" />
       <% } %>
 
       <!-- Rating form -->

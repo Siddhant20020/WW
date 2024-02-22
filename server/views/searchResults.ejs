@@ -125,7 +125,7 @@
       <% searchResults.forEach(bike => { %>
       <div class="bike-box">
         <a href="/bikeDetails?id=<%= bike._id %>">
-          <img src="<%= bike.image %>" alt="<%= bike.variant_name %>" />
+          <img src="<%= bike.url %>" alt="<%= bike.variant_name %>" />
           <div class="bike-info">
             <span class="bike-name"
               ><%= bike.variant_name %> - <%= bike.brand %></span

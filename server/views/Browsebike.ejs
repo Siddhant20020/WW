@@ -93,25 +93,21 @@
         display: flex;
         flex-wrap: wrap;
         margin-bottom: 20px;
-        
       }
 
       .option-group {
         display: none;
         width: 100%;
-        
       }
 
       .option-group.active {
         display: flex;
-        
       }
 
       .option {
         flex: 1 1 200px;
         margin-right: 10px;
         margin-bottom: 10px;
-        
       }
 
       .option button {
@@ -125,19 +121,16 @@
         transition: background-color 0.3s;
         display: flex;
         align-items: center;
-        
       }
 
       .option button:hover {
         background-color: #ddd;
-        
       }
 
       .option button.active {
         background-color: lightgreen;
         color: white;
         text-decoration: underline;
-        
       }
 
       .brand-img {
@@ -145,7 +138,6 @@
         height: auto;
         margin-right: 10px;
         transition: background-color 0.3s;
-        
       }
 
       .bike-list {
@@ -359,7 +351,7 @@
           const bikeItem = document.createElement("div");
           bikeItem.classList.add("bike-item");
           bikeItem.innerHTML = `
-                <img src="${bike.image}" alt="${bike.variant_name}" />
+                <img src="${bike.url}" alt="${bike.variant_name}" />
                 <h4>${bike.variant_name}</h4>
                 <p>Price: Rs ${bike.price}</p>
             `;

@@ -13,13 +13,14 @@
       }
 
       header {
-        background-color: Dark Blue;
+        background-color: DarkBlue;
         color: #fff;
         padding: 10px 20px;
         display: flex;
         justify-content: space-between;
         align-items: center;
       }
+
       nav a {
         text-decoration: none;
         color: #fff;
@@ -102,6 +103,32 @@
         margin-top: 15px;
       }
 
+      #bikeImageContainer {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      url.bike-image {
+        width: 45%;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      url.bike-image img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 5px;
+        transition: transform 0.3s ease;
+      }
+
+      .bike-image img:hover {
+        transform: scale(1.05);
+      }
+
       #comparisonResult {
         margin-top: 20px;
         border-collapse: collapse;
@@ -152,7 +179,6 @@
           <li><a href="/index">Home</a></li>
           <li><a href="/browse">Browse Bikes</a></li>
           <li><a href="/compare">Compare Bikes</a></li>
-
           <li><a href="/aboutus">About Us</a></li>
           <li><a href="/logout">Logout</a></li>
         </ul>
@@ -181,6 +207,15 @@
 
       <button id="compareButton">Compare</button>
 
+      <div id="bikeImageContainer" style="display: none">
+        <div class="bike-image" id="bikeImage1">
+          <img src="<%= bike.url %>" alt="Bike 1" />
+        </div>
+        <div class="bike-image" id="bikeImage2">
+          <img src="<%= bike.url %>" alt="Bike 2" />
+        </div>
+      </div>
+
       <div id="comparisonResult"></div>
     </main>
 
@@ -189,6 +224,15 @@
     </footer>
 
     <script>
+      document
+        .getElementById("compareButton")
+        .addEventListener("click", async () => {
+          // Fetch and display the bike images when "Compare" button is clicked
+          await displayBikeImages();
+          // Compare bikes
+          compareBikes();
+        });
+
       async function populateBikeOptions(priceRange) {
         try {
           // Parse the price range to get minimum and maximum values
@@ -222,9 +266,41 @@
             bike1Select.add(option);
             bike2Select.add(option.cloneNode(true));
           });
+
+          // Show bike selection options
           document.getElementById("bikeSelection").style.display = "block";
         } catch (error) {
           console.error("Error fetching bike options:", error);
+        }
+      }
+
+      async function displayBikeImages(bikes) {
+        const bike1Id = document.getElementById("bike1").value;
+        const bike2Id = document.getElementById("bike2").value;
+
+        const imageUrl1 = await fetchBikeImageUrl(bike1Id);
+        const imageUrl2 = await fetchBikeImageUrl(bike2Id);
+
+        // Set the src attribute of the image elements
+        document.getElementById(
+          "bikeImage1"
+        ).innerHTML = `<img src="${imageUrl1}" alt="Bike 1" />`;
+        document.getElementById(
+          "bikeImage2"
+        ).innerHTML = `<img src="${imageUrl2}" alt="Bike 2" />`;
+
+        // Show the container after setting the images
+        document.getElementById("bikeImageContainer").style.display = "flex";
+      }
+
+      async function fetchBikeImageUrl(bikeId) {
+        try {
+          const response = await fetch(`/api/bike/url/${bikeId}`);
+          const { url } = await response.json();
+          return url;
+        } catch (error) {
+          console.error(`Error fetching image URL for bike ${bikeId}:`, error);
+          return ""; // Return a placeholder URL or handle the error accordingly
         }
       }
 
@@ -253,32 +329,32 @@
       function generateComparisonTable(bikes) {
         let overallWinner = null;
         let tableHtml = `
-          <h2>Comparison Result:</h2>
-          <table>
-            <tr>
-              <th>Feature</th>
-              <th>${bikes[0].variant_name}</th>
-              <th>${bikes[1].variant_name}</th>
-              <th>Winner</th>
-            </tr>
-            `;
+      <h2>Comparison Result:</h2>
+      <table>
+        <tr>
+          <th>Feature</th>
+          <th>${bikes[0].variant_name}</th>
+          <th>${bikes[1].variant_name}</th>
+          <th>Winner</th>
+        </tr>
+        `;
 
         for (const key in bikes[0]) {
           if (
             key !== "_id" &&
             key !== "__v" &&
-            key !== "image_url" &&
+            key !== "url" &&
             key !== "variant_name"
           ) {
             const winner = getWinner(bikes, key, bikes[0][key], bikes[1][key]);
             tableHtml += `
-              <tr>
-                <td>${key}</td>
-                <td>${bikes[0][key]}</td>
-                <td>${bikes[1][key]}</td>
-                <td class="${winner}">${winner}</td>
-              </tr>
-              `;
+          <tr>
+            <td>${key}</td>
+            <td>${bikes[0][key]}</td>
+            <td>${bikes[1][key]}</td>
+            <td class="${winner}">${winner}</td>
+          </tr>
+          `;
             if (overallWinner === null || winner === "Tie") {
               overallWinner = winner;
             }
@@ -314,10 +390,6 @@
         const selectedBudget = this.value;
         populateBikeOptions(selectedBudget);
       });
-
-      document
-        .getElementById("compareButton")
-        .addEventListener("click", compareBikes);
     </script>
   </body>
 </html>
