@@ -14,7 +14,7 @@
       }
 
       header {
-        background-color: DarkBlue;
+        background-color: green;
         color: #fff;
         padding: 10px 20px;
         display: flex;
@@ -113,36 +113,6 @@
         margin-top: 15px;
       }
 
-      #bikeImageContainer {
-        display: flex;
-        align-items: center;
-        justify-content: space-around;
-        margin-bottom: 20px;
-        flex-wrap: wrap;
-      }
-
-      .bike-image {
-        width: 15%;
-        max-width: 150px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        flex: 1;
-      }
-
-      .bike-image img {
-        width: 100%;
-        height: auto;
-        display: block;
-        border-radius: 5px;
-        transition: transform 0.3s ease;
-      }
-
-      .bike-image img:hover {
-        transform: scale(1.05);
-      }
-
       #comparisonResult {
         margin-top: 20px;
         border-collapse: collapse;
@@ -177,6 +147,30 @@
       .no-results {
         color: red;
         margin-top: 10px;
+      }
+
+      #bikeImagesVs {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        margin-bottom: 20px;
+      }
+
+      .bike {
+        text-align: center;
+      }
+
+      .bike img {
+        width: 300px;
+        height: 300px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .bike p {
+        margin-top: 5px;
       }
     </style>
   </head>
@@ -286,7 +280,7 @@
             bike2Select.add(option.cloneNode(true));
           });
           // Show bike selection options
-          document.getElementById("bikeSelection").style.display = "block";
+          document.getElementById("bikeSelection").style.display = "flex";
         } catch (error) {
           console.error("Error fetching bike options:", error);
         }
@@ -317,7 +311,7 @@
           return url;
         } catch (error) {
           console.error(`Error fetching image URL for bike ${bikeId}:`, error);
-          return ""; // Return a placeholder URL or handle the error accordingly
+          return "";
         }
       }
 
@@ -345,27 +339,31 @@
 
       function generateComparisonTable(bikes) {
         let overallWinner = null;
+        let tieCount = 0;
+        let bike1Wins = 0;
+        let bike2Wins = 0;
+
         let tableHtml = `
-        <h2>Comparison Result:</h2>
-        <div id="bikeImagesVs">
+          <h2>Comparison Result:</h2>
+          <div id="bikeImagesVs">
             <div class="bike">
-                <img src="${bikes[0].url}" alt="${bikes[0].variant_name}" />
-                <p>${bikes[0].variant_name}</p>
+              <img src="${bikes[0].url}" alt="${bikes[0].variant_name}" />
+              <p>${bikes[0].variant_name}</p>
             </div>
             <div class="vs">vs</div>
             <div class="bike">
-                <img src="${bikes[1].url}" alt="${bikes[1].variant_name}" />
-                <p>${bikes[1].variant_name}</p>
+              <img src="${bikes[1].url}" alt="${bikes[1].variant_name}" />
+              <p>${bikes[1].variant_name}</p>
             </div>
-        </div>
-        <table>
+          </div>
+          <table>
             <tr>
-                <th>Feature</th>
-                <th>${bikes[0].variant_name}</th>
-                <th>${bikes[1].variant_name}</th>
-                <th>Winner</th>
+              <th>Feature</th>
+              <th>${bikes[0].variant_name}</th>
+              <th>${bikes[1].variant_name}</th>
+              <th>Winner</th>
             </tr>
-    `;
+        `;
 
         for (const key in bikes[0]) {
           if (
@@ -376,38 +374,71 @@
           ) {
             const winner = getWinner(bikes, key, bikes[0][key], bikes[1][key]);
             tableHtml += `
-                <tr>
-                    <td>${key}</td>
-                    <td>${bikes[0][key]}</td>
-                    <td>${bikes[1][key]}</td>
-                    <td class="${winner}">${winner}</td>
-                </tr>
+              <tr>
+                <td>${key}</td>
+                <td>${bikes[0][key]}</td>
+                <td>${bikes[1][key]}</td>
+                <td class="${winner}">${winner}</td>
+              </tr>
             `;
+
+            // Check if the feature is 'price' and update winner count accordingly
+            if (key === "price") {
+              if (winner === bikes[0].variant_name) {
+                bike1Wins++;
+              } else if (winner === bikes[1].variant_name) {
+                bike2Wins++;
+              }
+            }
+
+            // Check for overall winner logic
             if (overallWinner === null || winner !== "Tie") {
               overallWinner = winner;
+            } else {
+              tieCount++;
             }
           }
         }
 
         tableHtml += `</table>`;
+
+        // Determine overall winner based on number of wins and ties
+        if (tieCount > Math.max(bike1Wins, bike2Wins)) {
+          overallWinner = "Tie";
+        } else {
+          overallWinner =
+            bike1Wins > bike2Wins
+              ? bikes[0].variant_name
+              : bikes[1].variant_name;
+        }
+
         tableHtml += `<p class="overall-winner">Overall Winner: ${overallWinner}</p>`;
 
         return tableHtml;
       }
 
       function getWinner(bikes, feature, value1, value2) {
-        if (typeof value1 === "number" && typeof value2 === "number") {
-          return value1 > value2
+        // Special handling for price to determine winner based on lower value
+        if (feature === "price") {
+          return value1 < value2
             ? bikes[0].variant_name
-            : value1 < value2
+            : value1 > value2
             ? bikes[1].variant_name
             : "Tie";
         } else {
-          return value1 > value2
-            ? bikes[0].variant_name
-            : value1 < value2
-            ? bikes[1].variant_name
-            : "Tie";
+          if (typeof value1 === "number" && typeof value2 === "number") {
+            return value1 > value2
+              ? bikes[0].variant_name
+              : value1 < value2
+              ? bikes[1].variant_name
+              : "Tie";
+          } else {
+            return value1 > value2
+              ? bikes[0].variant_name
+              : value1 < value2
+              ? bikes[1].variant_name
+              : "Tie";
+          }
         }
       }
 
