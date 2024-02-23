@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/stylesheets/style.css" />
     <title>Compare Bikes</title>
     <style>
+      /* Your existing CSS styles */
       body {
         font-family: Arial, sans-serif;
         margin: 0;
@@ -75,6 +76,15 @@
         margin-bottom: 15px;
       }
 
+      option {
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+      }
+
+      option:hover {
+        background-color: #f2f2f2;
+      }
+
       #bikeSelection {
         display: flex;
         flex-wrap: wrap;
@@ -105,19 +115,23 @@
 
       #bikeImageContainer {
         display: flex;
-        justify-content: space-between;
+        align-items: center;
+        justify-content: space-around;
         margin-bottom: 20px;
+        flex-wrap: wrap;
       }
 
-      url.bike-image {
-        width: 45%;
+      .bike-image {
+        width: 15%;
+        max-width: 150px;
         border: 1px solid #ddd;
         border-radius: 5px;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         overflow: hidden;
+        flex: 1;
       }
 
-      url.bike-image img {
+      .bike-image img {
         width: 100%;
         height: auto;
         display: block;
@@ -198,22 +212,27 @@
       </select>
 
       <div id="bikeSelection">
-        <label for="bike1">Select Bike 1:</label>
-        <select id="bike1"></select>
-
-        <label for="bike2">Select Bike 2:</label>
-        <select id="bike2"></select>
+        <div class="bike-option">
+          <img id="bikeImage1" src="" alt="" class="bike-image-preview" />
+          <div class="bike-info">
+            <label for="bike1">Select Bike 1:</label>
+            <select id="bike1"></select>
+          </div>
+        </div>
+        <div class="bike-option">
+          <img id="bikeImage2" src="" alt="" class="bike-image-preview" />
+          <div class="bike-info">
+            <label for="bike2">Select Bike 2:</label>
+            <select id="bike2"></select>
+          </div>
+        </div>
       </div>
 
       <button id="compareButton">Compare</button>
 
       <div id="bikeImageContainer" style="display: none">
-        <div class="bike-image" id="bikeImage1">
-          <img src="<%= bike.url %>" alt="Bike 1" />
-        </div>
-        <div class="bike-image" id="bikeImage2">
-          <img src="<%= bike.url %>" alt="Bike 2" />
-        </div>
+        <div class="bike-image" id="bikeImage1"></div>
+        <div class="bike-image" id="bikeImage2"></div>
       </div>
 
       <div id="comparisonResult"></div>
@@ -261,12 +280,11 @@
 
           filteredBikes.forEach((bike) => {
             const option = document.createElement("option");
-            option.text = bike.variant_name;
+            option.text = `${bike.variant_name} - Rs ${bike.price}`;
             option.value = bike._id;
             bike1Select.add(option);
             bike2Select.add(option.cloneNode(true));
           });
-
           // Show bike selection options
           document.getElementById("bikeSelection").style.display = "block";
         } catch (error) {
@@ -281,13 +299,12 @@
         const imageUrl1 = await fetchBikeImageUrl(bike1Id);
         const imageUrl2 = await fetchBikeImageUrl(bike2Id);
 
-        // Set the src attribute of the image elements
         document.getElementById(
           "bikeImage1"
-        ).innerHTML = `<img src="${imageUrl1}" alt="Bike 1" />`;
+        ).innerHTML = `<img src="${imageUrl1}" alt="Bike 1">`;
         document.getElementById(
           "bikeImage2"
-        ).innerHTML = `<img src="${imageUrl2}" alt="Bike 2" />`;
+        ).innerHTML = `<img src="${imageUrl2}" alt="Bike 2">`;
 
         // Show the container after setting the images
         document.getElementById("bikeImageContainer").style.display = "flex";
@@ -329,15 +346,26 @@
       function generateComparisonTable(bikes) {
         let overallWinner = null;
         let tableHtml = `
-      <h2>Comparison Result:</h2>
-      <table>
-        <tr>
-          <th>Feature</th>
-          <th>${bikes[0].variant_name}</th>
-          <th>${bikes[1].variant_name}</th>
-          <th>Winner</th>
-        </tr>
-        `;
+        <h2>Comparison Result:</h2>
+        <div id="bikeImagesVs">
+            <div class="bike">
+                <img src="${bikes[0].url}" alt="${bikes[0].variant_name}" />
+                <p>${bikes[0].variant_name}</p>
+            </div>
+            <div class="vs">vs</div>
+            <div class="bike">
+                <img src="${bikes[1].url}" alt="${bikes[1].variant_name}" />
+                <p>${bikes[1].variant_name}</p>
+            </div>
+        </div>
+        <table>
+            <tr>
+                <th>Feature</th>
+                <th>${bikes[0].variant_name}</th>
+                <th>${bikes[1].variant_name}</th>
+                <th>Winner</th>
+            </tr>
+    `;
 
         for (const key in bikes[0]) {
           if (
@@ -348,23 +376,21 @@
           ) {
             const winner = getWinner(bikes, key, bikes[0][key], bikes[1][key]);
             tableHtml += `
-          <tr>
-            <td>${key}</td>
-            <td>${bikes[0][key]}</td>
-            <td>${bikes[1][key]}</td>
-            <td class="${winner}">${winner}</td>
-          </tr>
-          `;
-            if (overallWinner === null || winner === "Tie") {
+                <tr>
+                    <td>${key}</td>
+                    <td>${bikes[0][key]}</td>
+                    <td>${bikes[1][key]}</td>
+                    <td class="${winner}">${winner}</td>
+                </tr>
+            `;
+            if (overallWinner === null || winner !== "Tie") {
               overallWinner = winner;
             }
           }
         }
 
         tableHtml += `</table>`;
-        tableHtml += `<p>Overall Winner: ${overallWinner}</p>`;
-
-        // Include pros and cons in the comparison result
+        tableHtml += `<p class="overall-winner">Overall Winner: ${overallWinner}</p>`;
 
         return tableHtml;
       }
