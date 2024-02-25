@@ -12,40 +12,22 @@
         margin: 0;
         padding: 0;
       }
-
-      header {
-        background-color: green;
-        color: #fff;
-        padding: 10px 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+      /* CSS animation for winner */
+      .crown-animation {
+        animation-name: bounce;
+        animation-duration: 0.5s;
       }
 
-      nav a {
-        text-decoration: none;
-        color: #fff;
-        transition: color 0.3s ease;
-      }
-
-      nav a:hover {
-        color: #ccc;
-      }
-
-      nav ul {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-      }
-
-      nav ul li {
-        display: inline;
-        margin-right: 10px;
-      }
-
-      nav ul li a {
-        text-decoration: none;
-        color: #fff;
+      @keyframes bounce {
+        0% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0);
+        }
       }
 
       main {
@@ -203,6 +185,7 @@
         <option value="300001-400000">300001 - 400000</option>
         <option value="400001-500000">400001-500000</option>
         <option value="500001-600000">500001-600000</option>
+        <option value="600001-800000">600001-800000</option>
       </select>
 
       <div id="bikeSelection">
@@ -235,74 +218,13 @@
     <footer>
       <p>&copy; 2024 WiselyWheel. All rights reserved.</p>
     </footer>
-
     <script>
       document
         .getElementById("compareButton")
         .addEventListener("click", async () => {
-          // Fetch and display the bike images when "Compare" button is clicked
           await displayBikeImages();
-          // Compare bikes
           compareBikes();
         });
-
-      async function populateBikeOptions(priceRange) {
-        try {
-          // Parse the price range to get minimum and maximum values
-          const [minPrice, maxPrice] = priceRange.split("-").map(Number);
-
-          const response = await fetch(`/api/bikefeatures`);
-          const bikes = await response.json();
-
-          // Filter bikes based on price
-          const filteredBikes = bikes.filter(
-            (bike) => bike.price >= minPrice && bike.price <= maxPrice
-          );
-
-          if (filteredBikes.length === 0) {
-            document.getElementById("comparisonResult").innerHTML =
-              "No bikes found within the selected price range.";
-            document.getElementById("bikeSelection").style.display = "none";
-            return;
-          }
-
-          const bike1Select = document.getElementById("bike1");
-          const bike2Select = document.getElementById("bike2");
-
-          bike1Select.innerHTML = ""; // Clear previous options
-          bike2Select.innerHTML = ""; // Clear previous options
-
-          filteredBikes.forEach((bike) => {
-            const option = document.createElement("option");
-            option.text = `${bike.variant_name} - Rs ${bike.price}`;
-            option.value = bike._id;
-            bike1Select.add(option);
-            bike2Select.add(option.cloneNode(true));
-          });
-          // Show bike selection options
-          document.getElementById("bikeSelection").style.display = "flex";
-        } catch (error) {
-          console.error("Error fetching bike options:", error);
-        }
-      }
-
-      async function displayBikeImages(bikes) {
-        const bike1Id = document.getElementById("bike1").value;
-        const bike2Id = document.getElementById("bike2").value;
-
-        const imageUrl1 = await fetchBikeImageUrl(bike1Id);
-        const imageUrl2 = await fetchBikeImageUrl(bike2Id);
-
-        document.getElementById(
-          "bikeImage1"
-        ).innerHTML = `<img src="${imageUrl1}" alt="Bike 1">`;
-        document.getElementById(
-          "bikeImage2"
-        ).innerHTML = `<img src="${imageUrl2}" alt="Bike 2">`;
-
-        // Show the container after setting the images
-        document.getElementById("bikeImageContainer").style.display = "flex";
-      }
 
       async function fetchBikeImageUrl(bikeId) {
         try {
@@ -315,10 +237,54 @@
         }
       }
 
+      async function populateBikeOptions(priceRange) {
+        try {
+          const [minPrice, maxPrice] = priceRange.split("-").map(Number);
+          const response = await fetch(`/api/bikefeatures`);
+          const bikes = await response.json();
+          const filteredBikes = bikes.filter(
+            (bike) => bike.price >= minPrice && bike.price <= maxPrice
+          );
+          if (filteredBikes.length === 0) {
+            document.getElementById("comparisonResult").innerHTML =
+              "No bikes found within the selected price range.";
+            document.getElementById("bikeSelection").style.display = "none";
+            return;
+          }
+          const bike1Select = document.getElementById("bike1");
+          const bike2Select = document.getElementById("bike2");
+          bike1Select.innerHTML = "";
+          bike2Select.innerHTML = "";
+          filteredBikes.forEach((bike) => {
+            const option = document.createElement("option");
+            option.text = `${bike.variant_name} - Rs ${bike.price}`;
+            option.value = bike._id;
+            bike1Select.add(option);
+            bike2Select.add(option.cloneNode(true));
+          });
+          document.getElementById("bikeSelection").style.display = "flex";
+        } catch (error) {
+          console.error("Error fetching bike options:", error);
+        }
+      }
+
+      async function displayBikeImages(bikes) {
+        const bike1Id = document.getElementById("bike1").value;
+        const bike2Id = document.getElementById("bike2").value;
+        const imageUrl1 = await fetchBikeImageUrl(bike1Id);
+        const imageUrl2 = await fetchBikeImageUrl(bike2Id);
+        document.getElementById(
+          "bikeImage1"
+        ).innerHTML = `<img src="${imageUrl1}" alt="Bike 1">`;
+        document.getElementById(
+          "bikeImage2"
+        ).innerHTML = `<img src="${imageUrl2}" alt="Bike 2">`;
+        document.getElementById("bikeImageContainer").style.display = "flex";
+      }
+
       async function compareBikes() {
         const bike1Id = document.getElementById("bike1").value;
         const bike2Id = document.getElementById("bike2").value;
-
         try {
           const response = await fetch("/api/bikefeatures/compare", {
             method: "POST",
@@ -328,21 +294,23 @@
             body: JSON.stringify({ bikeIds: [bike1Id, bike2Id] }),
           });
           const bikes = await response.json();
-
           const comparisonResultElement =
             document.getElementById("comparisonResult");
           comparisonResultElement.innerHTML = generateComparisonTable(bikes);
+          // Find the overall winner based on the comparison table
+          const overallWinner = findOverallWinner(bikes);
+          comparisonResultElement.innerHTML += `<p class="overall-winner">Overall Winner: ${overallWinner}</p>`;
+          // Add animation for overall winner
+          const winnerElement = document.querySelector(
+            `#${overallWinner.toLowerCase().replace(/\s+/g, "-")} img`
+          );
+          winnerElement.classList.add("crown-animation");
         } catch (error) {
           console.error("Error comparing bikes:", error);
         }
       }
 
       function generateComparisonTable(bikes) {
-        let overallWinner = null;
-        let tieCount = 0;
-        let bike1Wins = 0;
-        let bike2Wins = 0;
-
         let tableHtml = `
           <h2>Comparison Result:</h2>
           <div id="bikeImagesVs">
@@ -364,13 +332,17 @@
               <th>Winner</th>
             </tr>
         `;
-
         for (const key in bikes[0]) {
           if (
             key !== "_id" &&
             key !== "__v" &&
             key !== "url" &&
-            key !== "variant_name"
+            key !== "variant_name" &&
+            key !== "engine_type" &&
+            key !== "brand" &&
+            key !== "bodytype" &&
+            key !== "kerb_weight" &&
+            key !== "cooling_system" // Exclude features you don't want to compare
           ) {
             const winner = getWinner(bikes, key, bikes[0][key], bikes[1][key]);
             tableHtml += `
@@ -381,64 +353,75 @@
                 <td class="${winner}">${winner}</td>
               </tr>
             `;
-
-            // Check if the feature is 'price' and update winner count accordingly
-            if (key === "price") {
-              if (winner === bikes[0].variant_name) {
-                bike1Wins++;
-              } else if (winner === bikes[1].variant_name) {
-                bike2Wins++;
-              }
-            }
-
-            // Check for overall winner logic
-            if (overallWinner === null || winner !== "Tie") {
-              overallWinner = winner;
-            } else {
-              tieCount++;
-            }
           }
         }
-
         tableHtml += `</table>`;
-
-        // Determine overall winner based on number of wins and ties
-        if (tieCount > Math.max(bike1Wins, bike2Wins)) {
-          overallWinner = "Tie";
-        } else {
-          overallWinner =
-            bike1Wins > bike2Wins
-              ? bikes[0].variant_name
-              : bikes[1].variant_name;
-        }
-
-        tableHtml += `<p class="overall-winner">Overall Winner: ${overallWinner}</p>`;
-
         return tableHtml;
       }
 
       function getWinner(bikes, feature, value1, value2) {
-        // Special handling for price to determine winner based on lower value
-        if (feature === "price") {
-          return value1 < value2
+        if (!value1 || String(value1).trim() === "") {
+          return bikes[1].variant_name;
+        } else if (!value2 || String(value2).trim() === "") {
+          return bikes[0].variant_name;
+        }
+
+        if (feature === "price" || feature === "zeroto100Kmph_sec") {
+          // Cheaper bike wins
+          return parseFloat(value1) < parseFloat(value2)
             ? bikes[0].variant_name
-            : value1 > value2
+            : parseFloat(value1) > parseFloat(value2)
+            ? bikes[1].variant_name
+            : "Tie";
+        } else if (feature === "max_torque" || feature === "peak_power") {
+          // Extract numbers from strings and compare
+          const numRegex = /(\d+(\.\d+)?)/g;
+          const value1Num = parseFloat(value1.match(numRegex)[0]);
+          const value2Num = parseFloat(value2.match(numRegex)[0]);
+          return value1Num > value2Num
+            ? bikes[0].variant_name
+            : value1Num < value2Num
             ? bikes[1].variant_name
             : "Tie";
         } else {
-          if (typeof value1 === "number" && typeof value2 === "number") {
-            return value1 > value2
-              ? bikes[0].variant_name
-              : value1 < value2
-              ? bikes[1].variant_name
-              : "Tie";
-          } else {
-            return value1 > value2
-              ? bikes[0].variant_name
-              : value1 < value2
-              ? bikes[1].variant_name
-              : "Tie";
+          // Higher value wins for other features
+          return parseFloat(value1) > parseFloat(value2)
+            ? bikes[0].variant_name
+            : parseFloat(value1) < parseFloat(value2)
+            ? bikes[1].variant_name
+            : "Tie";
+        }
+      }
+
+      function findOverallWinner(bikes) {
+        let bike1Wins = 0;
+        let bike2Wins = 0;
+        for (const key in bikes[0]) {
+          if (
+            key !== "_id" &&
+            key !== "__v" &&
+            key !== "url" &&
+            key !== "variant_name" &&
+            key !== "engine_type" &&
+            key !== "brand" &&
+            key !== "bodytype" &&
+            key !== "kerb_weight" &&
+            key !== "cooling_system" // Exclude features you don't want to compare
+          ) {
+            const winner = getWinner(bikes, key, bikes[0][key], bikes[1][key]);
+            if (winner === bikes[0].variant_name) {
+              bike1Wins++;
+            } else if (winner === bikes[1].variant_name) {
+              bike2Wins++;
+            }
           }
+        }
+        if (bike1Wins === bike2Wins) {
+          return "Tie";
+        } else {
+          return bike1Wins > bike2Wins
+            ? bikes[0].variant_name
+            : bikes[1].variant_name;
         }
       }
 

@@ -153,10 +153,17 @@
         perspective: 1000px;
         cursor: pointer;
 
-        .container {
-          max-width: 100%;
-          margin: 0 auto;
-          padding: 20px;
+        url.container {
+          max-width: 200px; /* Adjust the maximum width as needed */
+          margin: 0 auto; /* Center the container horizontally */
+          padding: 20px; /* Add some padding for spacing */
+        }
+
+        .container img {
+          max-width: 100%; /* Ensure the image fits within the container */
+          height: auto; /* Maintain aspect ratio */
+          display: block; /* Ensure the image is centered within the container */
+          margin: 0 auto; /* Center the image horizontally */
         }
       }
     </style>
@@ -217,7 +224,7 @@
         </tr>
         <tr>
           <td>Price</td>
-          <td><%= bike.price %></td>
+          <td>Rs <%= bike.price %></td>
         </tr>
         <tr>
           <td>Engine Type</td>
@@ -225,7 +232,7 @@
         </tr>
         <tr>
           <td>Displacement</td>
-          <td><%= bike.displacement %></td>
+          <td><%= bike.displacement %> cc</td>
         </tr>
         <tr>
           <td>Max Torque</td>
@@ -240,24 +247,24 @@
           <td><%= bike.valve_per_cylinder %></td>
         </tr>
         <tr>
-          <td>Starting</td>
-          <td><%= bike.starting %></td>
+          <td>Riding range</td>
+          <td><%= bike. riding_range %> Km</td>
         </tr>
         <tr>
-          <td>Fuel Supply</td>
-          <td><%= bike.fuel_supply %></td>
+          <td>Fuel Tank</td>
+          <td><%= bike.fuel_tank %> L</td>
         </tr>
         <tr>
-          <td>Clutch</td>
-          <td><%= bike.clutch %></td>
+          <td>Reserve Fuel</td>
+          <td><%= bike.reserve_fuel%> L</td>
         </tr>
         <tr>
-          <td>Ignition</td>
-          <td><%= bike.ignition %></td>
+          <td>Top Speed</td>
+          <td><%= bike.top_speed %>kmph</td>
         </tr>
         <tr>
           <td>Mileage</td>
-          <td><%= bike.mileage %></td>
+          <td><%= bike.mileage %> Kmpl</td>
         </tr>
         <tr>
           <td>Body Type</td>
@@ -265,15 +272,15 @@
         </tr>
         <tr>
           <td>0-100 Kmph(sec)</td>
-          <td><%= bike.zero_100Kmph_sec %></td>
+          <td><%= bike.zeroto100Kmph_sec%> sec</td>
         </tr>
         <tr>
           <td>Peak Power</td>
           <td><%= bike.peak_power %></td>
         </tr>
         <tr>
-          <td>Transmission</td>
-          <td><%= bike.transmission %></td>
+          <td>Kerb Weight</td>
+          <td><%= bike.kerb_weight %> Kg</td>
         </tr>
       </table>
 
