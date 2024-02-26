@@ -4,90 +4,90 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/stylesheets/style.css" />
-    <style>
-      /* CSS styles for the search button */
-      #searchForm {
-        text-align: center;
-        margin-bottom: 3mm;
-      }
-      .search-bar {
-        margin-top: 1rem;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      #bikeSearchInput {
-        padding: 0.5rem; /* Adjust the padding */
-        border: 1px solid #ccc;
-        border-radius: 5px 0 0 5px;
-        width: 20%; /* Adjust the width */
-        font-size: 17px; /* Adjust the font size */
-      }
-
-      #searchButton {
-        padding: 0.5rem 1rem;
-        background-color: rgb(36, 201, 36);
-        color: #fff;
-        border: none;
-        border-radius: 0 5px 5px 0;
-        cursor: pointer;
-        font-size: 18px; /* Adjust the font size */
-        transition: background-color 0.3s ease;
-      }
-
-      /* CSS styles for the brand logo */
-      #brandLogo {
-        display: none;
-        margin-top: 10px;
-        text-align: center;
-      }
-
-      #brandLogo img {
-        width: 100px;
-        height: auto;
-      }
-
-      /* CSS styles for search result boxes */
-      .search-results {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-
-      .bike-box {
-        margin: 10px;
-        padding: 10px;
-        width: 250px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s;
-        background-color: #fff;
-      }
-
-      .bike-box:hover {
-        transform: translateY(-5px);
-      }
-
-      .bike-box img {
-        width: 100%;
-        height: auto;
-        margin-bottom: 10px;
-      }
-
-      .bike-name {
-        font-size: 18px;
-        font-weight: bold;
-      }
-
-      .bike-price {
-        font-size: 16px;
-        color: #777;
-      }
-    </style>
     <title>Search Results</title>
   </head>
+  <style>
+    /* CSS styles for the search button */
+    #searchForm {
+      text-align: center;
+      margin-bottom: 3mm;
+    }
+    .search-bar {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #bikeSearchInput {
+      padding: 0.5rem; /* Adjust the padding */
+      border: 1px solid #ccc;
+      border-radius: 5px 0 0 5px;
+      width: 20%; /* Adjust the width */
+      font-size: 17px; /* Adjust the font size */
+    }
+
+    #searchButton {
+      padding: 0.5rem 1rem;
+      background-color: rgb(36, 201, 36);
+      color: #fff;
+      border: none;
+      border-radius: 0 5px 5px 0;
+      cursor: pointer;
+      font-size: 18px; /* Adjust the font size */
+      transition: background-color 0.3s ease;
+    }
+
+    /* CSS styles for the brand logo */
+    #brandLogo {
+      display: none;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    #brandLogo img {
+      width: 100px;
+      height: auto;
+    }
+
+    /* CSS styles for search result boxes */
+    .search-results {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .bike-box {
+      margin: 10px;
+      padding: 10px;
+      width: 250px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s;
+      background-color: #fff;
+    }
+
+    .bike-box:hover {
+      transform: translateY(-5px);
+    }
+
+    .bike-box img {
+      width: 100%;
+      height: auto;
+      margin-bottom: 10px;
+    }
+
+    .bike-name {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .bike-price {
+      font-size: 16px;
+      color: #777;
+    }
+  </style>
   <body>
     <header>
       <img
