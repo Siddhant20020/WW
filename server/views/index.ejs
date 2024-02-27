@@ -6,45 +6,6 @@
     <link rel="stylesheet" href="/stylesheets/style.css" />
     <title>WiselyWheel</title>
     <style>
-      body {
-        font-family: Bahnschrift, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f9f9f9;
-      }
-
-      header {
-        background-color: Green;
-        color: #fff;
-        padding: 1rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-      }
-
-      nav ul {
-        list-style: none;
-        display: flex;
-      }
-
-      nav li {
-        margin-right: 1rem;
-      }
-
-      nav a {
-        text-decoration: none;
-        color: #fff;
-        transition: color 0.3s ease;
-      }
-
-      nav a:hover {
-        color: #ccc;
-      }
-      a:hover {
-        text-decoration: underline;
-      }
-
       .hero {
         text-align: center;
         padding: 5%;
@@ -90,7 +51,7 @@
       }
 
       .box {
-        width: 300px;
+        width: 100px;
         margin-bottom: 20px;
         border: 1px solid #ddd;
         border-radius: 5px;
@@ -229,7 +190,7 @@
           <li><a href="/browse">Browse Bikes</a></li>
           <li><a href="/compare">Compare Bikes</a></li>
           <li><a href="/aboutus">About Us</a></li>
-          <li><a href="/logout">Logout</a></li>
+          <li><a href="#" onclick="confirmLogout()">Logout</a></li>
         </ul>
       </nav>
     </header>
@@ -383,6 +344,14 @@
           window.location.href = `/searchResults?searchTerm=${searchTerm}`;
         });
       });
+      function confirmLogout() {
+        var username = "<%= username %>";
+        if (confirm("Do you want to logout  " + username + "?")) {
+          window.location.href = "/";
+        } else {
+          return false;
+        }
+      }
     </script>
     <footer>
       <p>&copy; 2024 WiselyWheel. All rights reserved.</p>

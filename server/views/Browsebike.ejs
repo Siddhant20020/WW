@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="/stylesheets/style.css" />
     <title>WiselyWheel</title>
     <style>
-   
       .filters {
         display: flex;
         justify-content: flex-start;
@@ -178,7 +177,7 @@
           <li><a href="/browse">Browse Bikes</a></li>
           <li><a href="/compare">Compare Bikes</a></li>
           <li><a href="/aboutus">About Us</a></li>
-          <li><a href="/logout">Logout</a></li>
+         <li><a href="#" onclick="confirmLogout()">Logout</a></li>
         </ul>
       </nav>
     </header>
@@ -275,7 +274,6 @@
       <p>&copy; 2024 WiselyWheel. All rights reserved.</p>
     </footer>
     <script>
-      // JavaScript code
       function showBrand() {
         const brandOptions = document.querySelector(".brand-options");
         const priceOptions = document.querySelector(".price-options");
@@ -287,7 +285,6 @@
         brandBtn.classList.add("active");
         priceBtn.classList.remove("active");
 
-        // Hide bike list
         const bikeList = document.getElementById("bikeList");
         bikeList.innerHTML = "";
       }
@@ -341,15 +338,21 @@
                 <p>Price: Rs ${bike.price}</p>
             `;
           bikeItem.addEventListener("click", () => {
-            // Redirect to bike details page
             window.location.href = `/bikeDetails?id=${bike._id}`;
           });
           bikeList.appendChild(bikeItem);
         });
       }
 
-      // Initial load
       showBrand();
+      function confirmLogout() {
+        var username = "<%= username %>";
+        if (confirm("Do you want to logout  " + username + "?")) {
+          window.location.href = "/";
+        } else {
+          return false;
+        }
+      }
     </script>
   </body>
 </html>

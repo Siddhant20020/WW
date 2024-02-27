@@ -101,7 +101,7 @@
         <li><a href="/browse">Browse Bikes</a></li>
         <li><a href="/compare">Compare Bikes</a></li>
         <li><a href="/aboutus">About Us</a></li>
-        <li><a href="/logout">Logout</a></li>
+       <li><a href="#" onclick="confirmLogout()">Logout</a></li>
       </nav>
     </header>
 
@@ -175,6 +175,14 @@
           window.location.href = `/searchResults?searchTerm=${searchTerm}`;
         });
       });
+      function confirmLogout() {
+        var username = "<%= username %>";
+        if (confirm("Do you want to logout  " + username + "?")) {
+          window.location.href = "/";
+        } else {
+          return false;
+        }
+      }
     </script>
   </body>
 </html>

@@ -47,8 +47,7 @@
         display: flex;
         flex-wrap: wrap;
         gap: 15px;
-        align-items: center; 
-        
+        align-items: center;
       }
 
       #bikeSelection label {
@@ -150,7 +149,7 @@
           <li><a href="/browse">Browse Bikes</a></li>
           <li><a href="/compare">Compare Bikes</a></li>
           <li><a href="/aboutus">About Us</a></li>
-          <li><a href="/logout">Logout</a></li>
+         <li><a href="#" onclick="confirmLogout()">Logout</a></li>
         </ul>
       </nav>
     </header>
@@ -277,14 +276,12 @@
           const comparisonResultElement =
             document.getElementById("comparisonResult");
           comparisonResultElement.innerHTML = generateComparisonTable(bikes);
-
           const overallWinner = findOverallWinner(bikes);
           comparisonResultElement.innerHTML += `<p class="overall-winner">Overall Winner: ${overallWinner}</p>`;
         } catch (error) {
           console.error("Error comparing bikes:", error);
         }
       }
-
       function generateComparisonTable(bikes) {
         let tableHtml = `
           <h2>Comparison Result:</h2>
@@ -305,8 +302,7 @@
               <th>${bikes[0].variant_name}</th>
               <th>${bikes[1].variant_name}</th>
               <th>Winner</th>
-            </tr>
-        `;
+            </tr>  `;
         for (const key in bikes[0]) {
           if (
             key !== "_id" &&
@@ -340,7 +336,6 @@
         } else if (!value2 || String(value2).trim() === "") {
           return bikes[0].variant_name;
         }
-
         if (feature === "price" || feature === "zeroto100Kmph_sec") {
           return parseFloat(value1) < parseFloat(value2)
             ? bikes[0].variant_name
@@ -402,6 +397,14 @@
         const selectedBudget = this.value;
         populateBikeOptions(selectedBudget);
       });
+      function confirmLogout() {
+        var username = "<%= username %>";
+        if (confirm("Do you want to logout  " + username + "?")) {
+          window.location.href = "/";
+        } else {
+          return false;
+        }
+      }
     </script>
   </body>
 </html>

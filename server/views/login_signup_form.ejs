@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -12,17 +12,7 @@
         background-color: #f4f4f4;
       }
 
-      nav ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-
-      nav ul li {
-        display: inline;
-        margin-right: 20px;
-      }
-
+     
       .login-signup {
         max-width: 400px;
         margin: 50px auto;
@@ -144,28 +134,29 @@
         </ul>
       </nav>
     </header>
-    <% if (typeof bikeRankings !== 'undefined' && bikeRankings) { %>
-    <section class="popular-bikes" id="popular-bikes">
-      <div class="heading">
-        <h1>Popular Bikes</h1>
-      </div>
-      <div class="popular-bikes-container">
-        <% bikeRankings.forEach((bike, index) => { %>
-        <div class="box">
-          <div class="box-img">
-            <img src="<%= bike.bike.url %>" alt="Bike Image" />
-          </div>
-          <h3><%= index + 1 %>. <%= bike.bike.variant_name %></h3>
-          <h5>
-            Rating: <%= bike.averageRating.toFixed(1) %> | Total Ratings: <%=
-            bike.totalRatings %>
-          </h5>
+  
+    <div class="container">
+      <% if (typeof bikeRankings !== 'undefined' && bikeRankings) { %>
+      <section class="popular-bikes" id="popular-bikes">
+        <div class="heading">
+          <h1>Popular Bikes</h1>
         </div>
-        <% }); %>
-      </div>
-    </section>
-    <% } %>
-
+        <div class="popular-bikes-container">
+          <% bikeRankings.slice(0, 3).forEach((bike, index) => { %>
+          <div class="box">
+            <div class="box-img">
+              <img src="<%= bike.bike.url %>" alt="Bike Image" />
+            </div>
+            <h3><%= index + 1 %>. <%= bike.bike.variant_name %></h3>
+            <h5>
+              Rating: <%= bike.averageRating.toFixed(1) %> | Total Ratings: <%=
+              bike.totalRatings %>
+            </h5>
+          </div>
+          <% }); %>
+        </div>
+      </section>
+      <% } %>
     <section class="login-signup">
       <h2 id="formHeading">Login</h2>
       <% if (error) { %>
@@ -235,6 +226,16 @@
             formSwitchLink.textContent = "Login";
           }
         });
+        const loggedIn = false;
+      document.querySelectorAll("nav ul li a").forEach((link) => {
+        link.addEventListener("click", (event) => {
+          if (!loggedIn) {
+            event.preventDefault();
+            alert("Please login first.");
+          }
+        });
+      });
+
       </script>
     </section>
   </body>

@@ -131,14 +131,10 @@ app.post('/signup', async (req, res) => {
 });
 
 app.get('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      console.error('Error destroying session:', err);
-      return res.status(500).json({ error: 'An error occurred during logout.' });
-    }
-    res.redirect('/');
-  });
+  const username = req.session.user ? req.session.user.username : 'User'; // Get the username from the session
+  res.render('logout', { username }); // Render the logout page with the username
 });
+
 
 app.post('/logout', (req, res) => {
   req.session.destroy(() => {
@@ -146,24 +142,31 @@ app.post('/logout', (req, res) => {
   });
 });
 
+
 app.get('/signup', (req, res) => {
   res.render('login_signup_form');
 });
 
 app.get('/index', (req, res) => {
-  res.render('index', { bikeRankings: res.locals.bikeRankings });
+  const username = req.session.user ? req.session.user.username : 'User'; // Get the username from the session
+  res.render('index', { bikeRankings: res.locals.bikeRankings, username: username });
 });
 
+
+
 app.get('/compare', (req, res) => {
-  res.render("Comparebike");
+  const username = req.session.user ? req.session.user.username : 'User';
+  res.render("Comparebike", { username: username });
 });
 
 app.get('/browse', (req, res) => {
-  res.render("Browsebike");
+  const username = req.session.user ? req.session.user.username : 'User';
+  res.render("Browsebike", { username: username });
 });
 
 app.get('/aboutus', (req, res) => {
-  res.render("aboutUs");
+  const username = req.session.user ? req.session.user.username : 'User';
+  res.render("aboutUs", { username: username });
 });
 
 app.get('/api/bikefeatures/brand/:brandName', async (req, res) => {
@@ -216,26 +219,21 @@ app.get('/searchResults', async (req, res) => {
   }
 });
 
-// Route to handle rating submission
 app.post('/api/bike/rate', async (req, res) => {
   try {
     const { bikeId, rating } = req.body;
 
-    // Check if user is authenticated and user id exists
     if (!req.session.user || !req.session.user._id) {
       return res.status(401).json({ error: 'User not authenticated.' });
     }
-
     const userId = req.session.user._id;
 
-    // Check if the user has already rated this bike
     let bikeRating = await BikeRatingModel.findOne({ bike: bikeId, user: userId });
 
-    // If the user has already rated the bike, update the existing rating
     if (bikeRating) {
       bikeRating.rating = rating;
     } else {
-      // Otherwise, create a new instance of BikeRating
+
       bikeRating = new BikeRatingModel({
         bike: bikeId,
         user: userId,
@@ -243,7 +241,6 @@ app.post('/api/bike/rate', async (req, res) => {
       });
     }
 
-    // Save the rating to the database
     await bikeRating.save();
 
     res.status(201).send('Rating submitted successfully');
@@ -253,18 +250,17 @@ app.post('/api/bike/rate', async (req, res) => {
   }
 });
 
-// Route to get bike rankings based on popularity
 app.get('/api/bike/rankings', async (req, res) => {
   try {
     const bikeRankings = res.locals.bikeRankings || [];
 
-    // Set Cache-Control header to prevent caching
+
     res.setHeader('Cache-Control', 'no-cache');
 
-    // Generate ETag
+
     const etag = generateETag(bikeRankings);
 
-    // Set ETag header
+
     res.setHeader('ETag', etag);
 
     res.json(bikeRankings);
@@ -274,7 +270,7 @@ app.get('/api/bike/rankings', async (req, res) => {
   }
 });
 
-// Function to generate ETag
+
 function generateETag(data) {
   const hash = crypto.createHash('md5').update(JSON.stringify(data)).digest('hex');
   return `"${hash}"`;
