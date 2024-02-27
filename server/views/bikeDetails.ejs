@@ -6,12 +6,7 @@
     <title>Bike Details</title>
     <link rel="stylesheet" href="/stylesheets/style.css" />
    <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f8f9fa;
-    }
+   
     
     .container {
       max-width: 800px;
@@ -28,6 +23,7 @@
     }
     
     .bike-image-container img {
+      margin-top:20px;
       max-width: 100%;
       height: 300px; /* Set a fixed height for the image */
       border-radius: 8px;
@@ -71,8 +67,11 @@
     
     table {
       width: 100%;
+      height:auto;
       border-collapse: collapse;
       margin-bottom: 20px;
+   
+     
     }
     
     th,
@@ -80,6 +79,7 @@
       padding: 10px;
       text-align: left;
       border-bottom: 1px solid #ddd;
+      
     }
     
     th {
@@ -93,6 +93,9 @@
     
     a:hover {
       text-decoration: underline;
+      
+     
+
     }
     
    </style>
@@ -182,31 +185,31 @@
         </tr>
         <tr>
           <td>Riding range</td>
-          <td><%= bike.riding_range %> Km</td>
+          <td><%= bike.riding_range %> km</td>
         </tr>
         <tr>
           <td>Fuel Tank</td>
-          <td><%= bike.fuel_tank %> L</td>
+          <td><%= bike.fuel_tank %>l</td>
         </tr>
         <tr>
           <td>Reserve Fuel</td>
-          <td><%= bike.reserve_fuel%> L</td>
+          <td><%= bike.reserve_fuel%>l</td>
         </tr>
         <tr>
           <td>Top Speed</td>
-          <td><%= bike.top_speed %>kmph</td>
+          <td><%= bike.top_speed %> kmph</td>
         </tr>
         <tr>
           <td>Mileage</td>
-          <td><%= bike.mileage %> Kmpl</td>
+          <td><%= bike.mileage %> kmpl</td>
         </tr>
         <tr>
           <td>Body Type</td>
           <td><%= bike.bodytype %></td>
         </tr>
         <tr>
-          <td>0-100 Kmph(sec)</td>
-          <td><%= bike.zeroto100Kmph_sec%> sec</td>
+          <td>0-100 kmph(sec)</td>
+          <td><%= bike.zeroto100kmph_sec%> sec</td>
         </tr>
         <tr>
           <td>Peak Power</td>

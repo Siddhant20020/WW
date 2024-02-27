@@ -4,6 +4,7 @@ const path = require('path');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const crypto = require('crypto');
 const app = express();
 const PORT = 3000;
 const UserModel = require('./model/users');
@@ -11,7 +12,7 @@ const BikeRatingModel = require('./model/bikeRatings');
 const BikeModel = require('./model/bikes');
 const bikeRouter = require('./routes/bikes');
 
-
+// Define fetchBikeRankings middleware
 const fetchBikeRankings = async (req, res, next) => {
   try {
     const bikeRankings = await BikeRatingModel.aggregate([
@@ -20,6 +21,12 @@ const fetchBikeRankings = async (req, res, next) => {
           _id: "$bike",
           averageRating: { $avg: "$rating" },
           totalRatings: { $sum: 1 }
+        }
+      },
+      {
+        $sort: {
+          averageRating: -1, // Sort by average rating descending
+          totalRatings: -1   // If average ratings are equal, sort by total ratings descending
         }
       },
       {
@@ -32,9 +39,6 @@ const fetchBikeRankings = async (req, res, next) => {
       },
       {
         $unwind: "$bike"
-      },
-      {
-        $sort: { totalRatings: -1 }
       }
     ]);
     res.locals.bikeRankings = bikeRankings;
@@ -63,16 +67,16 @@ app.use(session({
 mongoose.connect('mongodb://localhost:27017/WiselyWheel', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-
 })
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Error connecting to MongoDB', err));
 
 app.use('/api/bikefeatures', bikeRouter);
 
-
+// Use fetchBikeRankings middleware
 app.use(fetchBikeRankings);
 
+// Routes
 
 app.get('/', (req, res) => {
   if (req.session.user) {
@@ -157,8 +161,9 @@ app.get('/compare', (req, res) => {
 app.get('/browse', (req, res) => {
   res.render("Browsebike");
 });
+
 app.get('/aboutus', (req, res) => {
-  res.render("aboutUs")
+  res.render("aboutUs");
 });
 
 app.get('/api/bikefeatures/brand/:brandName', async (req, res) => {
@@ -247,33 +252,20 @@ app.post('/api/bike/rate', async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
+
 // Route to get bike rankings based on popularity
 app.get('/api/bike/rankings', async (req, res) => {
   try {
-    const bikeRankings = await BikeRatingModel.aggregate([
-      {
-        $group: {
-          _id: "$bike",
-          averageRating: { $avg: "$rating" },
-          totalRatings: { $sum: 1 }
-        }
-      },
-      {
-        $lookup: {
-          from: "bikefeatures",
-          localField: "_id",
-          foreignField: "_id",
-          as: "bike"
-        }
-      },
-      {
-        $unwind: "$bike"
-      }
-    ]);
+    const bikeRankings = res.locals.bikeRankings || [];
 
+    // Set Cache-Control header to prevent caching
+    res.setHeader('Cache-Control', 'no-cache');
 
+    // Generate ETag
+    const etag = generateETag(bikeRankings);
 
-    bikeRankings.sort((a, b) => b.averageRating - a.averageRating);
+    // Set ETag header
+    res.setHeader('ETag', etag);
 
     res.json(bikeRankings);
   } catch (error) {
@@ -282,7 +274,10 @@ app.get('/api/bike/rankings', async (req, res) => {
   }
 });
 
-
-
+// Function to generate ETag
+function generateETag(data) {
+  const hash = crypto.createHash('md5').update(JSON.stringify(data)).digest('hex');
+  return `"${hash}"`;
+}
 
 app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`));

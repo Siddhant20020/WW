@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="/stylesheets/style.css" />
     <style>
       body {
-        font-family: "Arial", sans-serif;
+        font-family: "Bahnschrift", sans-serif;
         margin: 0;
         padding: 0;
         background-color: #f4f4f4;
@@ -150,7 +150,7 @@
         <h1>Popular Bikes</h1>
       </div>
       <div class="popular-bikes-container">
-        <% bikeRankings.slice(0, 5).forEach((bike, index) => { %>
+        <% bikeRankings.forEach((bike, index) => { %>
         <div class="box">
           <div class="box-img">
             <img src="<%= bike.bike.url %>" alt="Bike Image" />
