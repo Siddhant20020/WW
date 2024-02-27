@@ -6,8 +6,6 @@
     <link rel="stylesheet" href="/stylesheets/style.css" />
     <title>Compare Bikes</title>
     <style>
-      /* Your existing CSS styles */
-
       main {
         max-width: 800px;
         margin: 20px auto;
@@ -49,7 +47,8 @@
         display: flex;
         flex-wrap: wrap;
         gap: 15px;
-        align-items: center; /* Center items vertically */
+        align-items: center; 
+        
       }
 
       #bikeSelection label {
@@ -162,8 +161,8 @@
       <label for="budget">Choose Budget:</label>
       <select id="price">
         <option value="100000-200000">100000-200000</option>
-        <option value="20001-300000">20000 - 300000</option>
-        <option value="300001-400000">300001 - 400000</option>
+        <option value="20001-300000">20000-300000</option>
+        <option value="300001-400000">300001-400000</option>
         <option value="400001-500000">400001-500000</option>
         <option value="500001-600000">500001-600000</option>
         <option value="600001-800000">600001-800000</option>
@@ -278,14 +277,9 @@
           const comparisonResultElement =
             document.getElementById("comparisonResult");
           comparisonResultElement.innerHTML = generateComparisonTable(bikes);
-          // Find the overall winner based on the comparison table
+
           const overallWinner = findOverallWinner(bikes);
           comparisonResultElement.innerHTML += `<p class="overall-winner">Overall Winner: ${overallWinner}</p>`;
-          // Add animation for overall winner
-          const winnerElement = document.querySelector(
-            `#${overallWinner.toLowerCase().replace(/\s+/g, "-")} img`
-          );
-          winnerElement.classList.add("crown-animation");
         } catch (error) {
           console.error("Error comparing bikes:", error);
         }
@@ -323,7 +317,7 @@
             key !== "brand" &&
             key !== "bodytype" &&
             key !== "kerb_weight" &&
-            key !== "cooling_system" // Exclude features you don't want to compare
+            key !== "cooling_system"
           ) {
             const winner = getWinner(bikes, key, bikes[0][key], bikes[1][key]);
             tableHtml += `
@@ -348,14 +342,12 @@
         }
 
         if (feature === "price" || feature === "zeroto100Kmph_sec") {
-          // Cheaper bike wins
           return parseFloat(value1) < parseFloat(value2)
             ? bikes[0].variant_name
             : parseFloat(value1) > parseFloat(value2)
             ? bikes[1].variant_name
             : "Tie";
         } else if (feature === "max_torque" || feature === "peak_power") {
-          // Extract numbers from strings and compare
           const numRegex = /(\d+(\.\d+)?)/g;
           const value1Num = parseFloat(value1.match(numRegex)[0]);
           const value2Num = parseFloat(value2.match(numRegex)[0]);
@@ -365,7 +357,6 @@
             ? bikes[1].variant_name
             : "Tie";
         } else {
-          // Higher value wins for other features
           return parseFloat(value1) > parseFloat(value2)
             ? bikes[0].variant_name
             : parseFloat(value1) < parseFloat(value2)
@@ -387,7 +378,7 @@
             key !== "brand" &&
             key !== "bodytype" &&
             key !== "kerb_weight" &&
-            key !== "cooling_system" // Exclude features you don't want to compare
+            key !== "cooling_system"
           ) {
             const winner = getWinner(bikes, key, bikes[0][key], bikes[1][key]);
             if (winner === bikes[0].variant_name) {
