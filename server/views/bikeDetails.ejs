@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bike Details</title>
-    <link rel="stylesheet" href="/stylesheets/style.css" />
-   <style>
-   
-    
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bike Details</title>
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+  <style>
     .container {
       max-width: 800px;
       margin: 20px auto;
@@ -16,12 +14,12 @@
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
-    
+
     .bike-image-container {
       text-align: center;
       margin-bottom: 20px;
     }
-    
+
     .bike-image-container img {
       margin-top:20px;
       max-width: 100%;
@@ -29,23 +27,23 @@
       border-radius: 8px;
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     }
-    
+
     .rating-container {
       text-align: center;
       margin-bottom: 20px;
     }
-    
+
     .rating-container label {
       margin-right: 10px;
     }
-    
+
     .rating-container select {
       padding: 8px;
       font-size: 16px;
       border: 1px solid #ddd;
       border-radius: 4px;
     }
-    
+
     .rating-container button {
       padding: 8px 20px;
       font-size: 16px;
@@ -55,254 +53,236 @@
       border-radius: 4px;
       cursor: pointer;
     }
-    
+
     .rating-container button:hover {
       background-color: #45a049;
     }
-    
+
     .rating {
       margin-top: 10px;
       font-size: 18px;
     }
-    
+
     table {
       width: 100%;
       height:auto;
       border-collapse: collapse;
       margin-bottom: 20px;
-   
-     
     }
-    
+
     th,
     td {
       padding: 10px;
       text-align: left;
       border-bottom: 1px solid #ddd;
-      
     }
-    
+
     th {
       background-color: #f2f2f2;
     }
-    
+
     a {
       text-decoration: none;
       color: #007bff;
     }
-    
+
     a:hover {
       text-decoration: underline;
-      
-     
-
     }
-    
-   </style>
-  </head>
-  <body>
-    <header>
-      <img
-        src="/image/logo.png"
-        alt="WiselyWheel"
-        width="150mm"
-        height="100mm"
-      />
-      <nav>
-        <ul>
-          <li><a href="/index">Home</a></li>
-          <li><a href="/browse">Browse Bikes</a></li>
-          <li><a href="/compare">Compare Bikes</a></li>
-          <li><a href="/aboutus">About Us</a></li>
-         <li><a href="#" onclick="confirmLogout()">Logout</a></li>
-        </ul>
-      </nav>
-    </header>
 
-    <div class="bike-image-container">
-      <% if (bike.url) { %>
-      <img src="<%= bike.url %>" alt="Bike Image" />
-      <% } %>
-    </div>
-    
+    .message {
+      margin-top: 10px;
+      color: #4caf50; /* Green color */
+    }
+  </style>
+</head>
+<body>
+<header>
+  <img src="/image/logo.png" alt="WiselyWheel" width="150mm" height="100mm" />
+  <nav>
+    <ul>
+      <li><a href="/index">Home</a></li>
+      <li><a href="/browse">Browse Bikes</a></li>
+      <li><a href="/compare">Compare Bikes</a></li>
+      <li><a href="/aboutus">About Us</a></li>
+      <li><a href="#" onclick="confirmLogout()">Logout</a></li>
+    </ul>
+  </nav>
+</header>
 
-      <!-- Rating form -->
-      <div class="rating-container">
-        <form id="ratingForm">
-          <label for="rating">Rate this bike:</label>
-          <select id="rating" name="rating">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-          </select>
-          <button type="submit">Submit Rating</button>
-        </form>
+<div class="bike-image-container">
+  <% if (bike.url) { %>
+  <img src="<%= bike.url %>" alt="Bike Image" />
+  <% } %>
+</div>
 
-        <div class="rating" id="ratingDisplay"></div>
-      </div>
+<div class="rating-container">
+  <form id="ratingForm">
+    <label for="rating">Rate this bike:</label>
+    <select id="rating" name="rating">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+    <button type="submit" id="submitButton">Submit Rating</button>
+  </form>
+  <div id="message" class="message" style="display: none;"></div>
+</div>
 
-      <table>
-        <tr>
-          <th>Bike Details</th>
-          <th>Value</th>
-        </tr>
-        <tr>
-          <td>Brand</td>
-          <td><%= bike.brand %></td>
-        </tr>
-        <tr>
-          <td>Variant Name</td>
-          <td><%= bike.variant_name %></td>
-        </tr>
-        <tr>
-          <td>Price</td>
-          <td>Rs <%= bike.price %></td>
-        </tr>
-        <tr>
-          <td>Engine Type</td>
-          <td><%= bike.engine_type %></td>
-        </tr>
-        <tr>
-          <td>Displacement</td>
-          <td><%= bike.displacement %> cc</td>
-        </tr>
-        <tr>
-          <td>Max Torque</td>
-          <td><%= bike.max_torque %></td>
-        </tr>
-        <tr>
-          <td>Cooling System</td>
-          <td><%= bike.cooling_system %></td>
-        </tr>
-        <tr>
-          <td>Valve Per Cylinder</td>
-          <td><%= bike.valve_per_cylinder %></td>
-        </tr>
-        <td>No of Cylinders</td>
-          <td><%= bike.no_of_cylinders %></td>
-        </tr>
-        <tr>
-          <td>Riding range</td>
-          <td><%= bike.riding_range %> km</td>
-        </tr>
-        <tr>
-          <td>Fuel Tank</td>
-          <td><%= bike.fuel_tank %>l</td>
-        </tr>
-        <tr>
-          <td>Reserve Fuel</td>
-          <td><%= bike.reserve_fuel%>l</td>
-        </tr>
-        <tr>
-          <td>Top Speed</td>
-          <td><%= bike.top_speed %> kmph</td>
-        </tr>
-        <tr>
-          <td>Mileage</td>
-          <td><%= bike.mileage %> kmpl</td>
-        </tr>
-        <tr>
-          <td>Body Type</td>
-          <td><%= bike.bodytype %></td>
-        </tr>
-        <tr>
-          <td>0-100 kmph(sec)</td>
-          <td><%= bike.zeroto100kmph_sec%> sec</td>
-        </tr>
-        <tr>
-          <td>Peak Power</td>
-          <td><%= bike.peak_power %></td>
-        </tr>
-        <tr>
-          <td>Kerb Weight</td>
-          <td><%= bike.kerb_weight %> Kg</td>
-        </tr>
-      </table>
 
-      <a href="/">Back to Search</a>
-    </div>
+<table>
+  <tr>
+    <th>Bike Details</th>
+    <th>Value</th>
+  </tr>
+  <tr>
+    <td>Brand</td>
+    <td><%= bike.brand %></td>
+  </tr>
+  <tr>
+    <td>Variant Name</td>
+    <td><%= bike.variant_name %></td>
+  </tr>
+  <tr>
+    <td>Price</td>
+    <td>Rs <%= bike.price %></td>
+  </tr>
+  <tr>
+    <td>Engine Type</td>
+    <td><%= bike.engine_type %></td>
+  </tr>
+  <tr>
+    <td>Displacement</td>
+    <td><%= bike.displacement %> cc</td>
+  </tr>
+  <tr>
+    <td>Max Torque</td>
+    <td><%= bike.max_torque %></td>
+  </tr>
+  <tr>
+    <td>Cooling System</td>
+    <td><%= bike.cooling_system %></td>
+  </tr>
+  <tr>
+    <td>Valve Per Cylinder</td>
+    <td><%= bike.valve_per_cylinder %></td>
+  </tr>
+  <td>No of Cylinders</td>
+  <td><%= bike.no_of_cylinders %></td>
+  </tr>
+  <tr>
+    <td>Riding range</td>
+    <td><%= bike.riding_range %> km</td>
+  </tr>
+  <tr>
+    <td>Fuel Tank</td>
+    <td><%= bike.fuel_tank %>l</td>
+  </tr>
+  <tr>
+    <td>Reserve Fuel</td>
+    <td><%= bike.reserve_fuel%>l</td>
+  </tr>
+  <tr>
+    <td>Top Speed</td>
+    <td><%= bike.top_speed %> kmph</td>
+  </tr>
+  <tr>
+    <td>Mileage</td>
+    <td><%= bike.mileage %> kmpl</td>
+  </tr>
+  <tr>
+    <td>Body Type</td>
+    <td><%= bike.bodytype %></td>
+  </tr>
+  <tr>
+    <td>0-100 kmph(sec)</td>
+    <td><%= bike.zeroto100kmph_sec%> sec</td>
+  </tr>
+  <tr>
+    <td>Peak Power</td>
+    <td><%= bike.peak_power %></td>
+  </tr>
+  <tr>
+    <td>Kerb Weight</td>
+    <td><%= bike.kerb_weight %> Kg</td>
+  </tr>
+</table>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const bikeId = urlParams.get("id");
+<a href="/">Back to Search</a>
 
-        // Function to fetch and display the rating
-        const fetchRating = async () => {
-          try {
-            const response = await fetch(`/api/bike/rating/${bikeId}`);
-            if (response.ok) {
-              const rating = await response.text();
-              const ratingDisplay = document.getElementById("ratingDisplay");
-              ratingDisplay.textContent = `Average Rating: ${rating}`;
-            } else {
-              console.error("Failed to fetch rating");
-            }
-          } catch (error) {
-            console.error("Error fetching rating:", error);
-          }
-        };
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const bikeId = urlParams.get("id");
 
-        fetchRating(); // Call the function when the page loads
+    function fetchUserRating() {
+      fetch(`/api/bike/rating/${bikeId}`)
+        .then(response => response.json())
+        .then(data => {
+          localStorage.setItem('userRating', data.rating);
+          displayUserRating(data.rating);
+        })
+        .catch(error => console.error('Error fetching user rating:', error));
+    }
 
-        // Function to save the user's rating locally
-        const saveRatingLocally = (rating) => {
-          localStorage.setItem(`bikeRating_${bikeId}`, rating);
-        };
-
-        // Function to get the user's rating from local storage
-        const getRatingLocally = () => {
-          return localStorage.getItem(`bikeRating_${bikeId}`);
-        };
-
-        // Check if the user has already rated the bike and set the select value accordingly
-        const userRating = getRatingLocally();
-        if (userRating) {
-          document.getElementById("rating").value = userRating;
-        }
-
-        // Submit rating form
-        const ratingForm = document.getElementById("ratingForm");
-        ratingForm.addEventListener("submit", async (event) => {
-          event.preventDefault();
-          const formData = new FormData(ratingForm);
-          const rating = formData.get("rating");
-
-          try {
-            const response = await fetch("/api/bike/rate", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ bikeId: bikeId, rating }),
-            });
-            if (response.ok) {
-              alert("Rating submitted successfully");
-              fetchRating(); // Update the displayed rating
-              saveRatingLocally(rating); // Save the rating locally
-            } else {
-              const errorMessage = await response.text();
-              alert(`Error: ${errorMessage}`);
-            }
-          } catch (error) {
-            console.error("Error submitting rating:", error);
-            alert("Failed to submit rating. Please try again later.");
-          }
-        });
-      });
-      function confirmLogout() {
-        var username = "<%= username %>";
-        if (confirm("Do you want to logout  " + username + "?")) {
-          window.location.href = "/";
-        } else {
-          return false;
-        }
+    function displayUserRating(rating) {
+      const userRatingElement = document.getElementById('rating');
+      if (userRatingElement) {
+        userRatingElement.value = rating;
+      } else {
+        console.error('Element with ID "rating" not found');
       }
-    </script>
-    <footer>
-      <p>&copy; 2024 WiselyWheel. All rights reserved.</p>
-    </footer>
-  </body>
+    }
+
+    function submitRating() {
+      const rating = document.getElementById('rating').value;
+      fetch('/api/bike/rate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ bikeId, rating })
+      })
+      .then(response => response.json())
+      .then(data => {
+        localStorage.setItem('userRating', data.rating);
+        displayUserRating(data.rating);
+        const message = document.getElementById('message');
+        message.innerText = "Rating has been submitted!";
+        message.style.display = "block";
+        setTimeout(() => {
+          message.style.display = "none";
+        }, 2000); // Hide message after 2 seconds
+      })
+      .catch(error => console.error('Error submitting rating:', error));
+    }
+
+    document.getElementById('ratingForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      submitRating();
+    });
+
+    const storedRating = localStorage.getItem('userRating');
+    if (storedRating) {
+      displayUserRating(storedRating);
+    } else {
+      fetchUserRating();
+    }
+  });
+
+  function confirmLogout() {
+    var username = "<%= username %>";
+    if (confirm("Have you made up your mind" + username + "?")) {
+      window.location.href = "/";
+      return false;
+    }
+  }
+</script>
+
+<footer>
+  <p>&copy; 2024 WiselyWheel. All rights reserved.</p>
+</footer>
+</body>
 </html>

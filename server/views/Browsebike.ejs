@@ -127,6 +127,7 @@
       .bike-list {
         display: flex;
         flex-wrap: wrap;
+        align-items: center;
       }
 
       .bike-item {
@@ -138,6 +139,7 @@
         transition: transform 0.3s;
         background-color: #fff;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        align-items: center;
       }
 
       .bike-item:hover {
@@ -177,7 +179,7 @@
           <li><a href="/browse">Browse Bikes</a></li>
           <li><a href="/compare">Compare Bikes</a></li>
           <li><a href="/aboutus">About Us</a></li>
-         <li><a href="#" onclick="confirmLogout()">Logout</a></li>
+          <li><a href="#" onclick="confirmLogout()">Logout</a></li>
         </ul>
       </nav>
     </header>
@@ -221,18 +223,18 @@
 
           <div class="option">
             <img
-              src="/image/Royal.png"
-              alt="Royal"
-              class="brand-img"
-              onclick="loadBikesByBrand('Royal Enfield')"
-            />
-          </div>
-          <div class="option">
-            <img
               src="/image/TVS.png"
               alt="TVS"
               class="brand-img"
               onclick="loadBikesByBrand('TVS')"
+            />
+          </div>
+          <div class="option">
+            <img
+              src="/image/Royal.png"
+              alt="Royal"
+              class="brand-img"
+              onclick="loadBikesByBrand('Royal Enfield')"
             />
           </div>
         </div>
@@ -347,7 +349,7 @@
       showBrand();
       function confirmLogout() {
         var username = "<%= username %>";
-        if (confirm("Do you want to logout  " + username + "?")) {
+        if (confirm("Have made up your mind  " + username + "?")) {
           window.location.href = "/";
         } else {
           return false;

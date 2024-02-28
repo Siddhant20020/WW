@@ -101,7 +101,7 @@
         <li><a href="/browse">Browse Bikes</a></li>
         <li><a href="/compare">Compare Bikes</a></li>
         <li><a href="/aboutus">About Us</a></li>
-       <li><a href="#" onclick="confirmLogout()">Logout</a></li>
+        <li><a href="#" onclick="confirmLogout()">Logout</a></li>
       </nav>
     </header>
 
@@ -177,7 +177,7 @@
       });
       function confirmLogout() {
         var username = "<%= username %>";
-        if (confirm("Do you want to logout  " + username + "?")) {
+        if (confirm("Have made up your mind  " + username + "?")) {
           window.location.href = "/";
         } else {
           return false;

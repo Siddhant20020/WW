@@ -77,12 +77,18 @@ app.use('/api/bikefeatures', bikeRouter);
 app.use(fetchBikeRankings);
 
 // Routes
+app.get('/', async (req, res) => {
+  res.render('login_signup_form', { error: null }); // Pass null as error when rendering login/signup form initially
+});
 
-app.get('/', (req, res) => {
-  if (req.session.user) {
-    res.render('index', { bikeRankings: res.locals.bikeRankings });
-  } else {
-    res.render('login_signup_form', { error: null });
+app.get('/index', async (req, res) => {
+  try {
+    const bikeRankings = res.locals.bikeRankings;
+    const username = req.session.user ? req.session.user.username : null;
+    res.render('index', { bikeRankings, username });
+  } catch (error) {
+    console.error('Error fetching bike rankings:', error);
+    res.render('index', { bikeRankings: [], username: null, error: 'Error fetching bike rankings' });
   }
 });
 
@@ -105,7 +111,7 @@ app.post('/login', async (req, res) => {
     res.redirect('/index');
   } catch (error) {
     console.error('Error during login:', error);
-    res.status(500).json({ error: 'An error occurred during login.' });
+    res.render('login_signup_form', { error: 'An error occurred during login.' });
   }
 });
 
@@ -131,42 +137,41 @@ app.post('/signup', async (req, res) => {
 });
 
 app.get('/logout', (req, res) => {
-  const username = req.session.user ? req.session.user.username : 'User'; // Get the username from the session
-  res.render('logout', { username }); // Render the logout page with the username
-});
-
-
-app.post('/logout', (req, res) => {
-  req.session.destroy(() => {
+  
+  req.session.destroy(err => {
+    if (err) {
+      
+      console.error('Error destroying session:', err);
+    }
     res.redirect('/');
   });
 });
 
-
-app.get('/signup', (req, res) => {
-  res.render('login_signup_form');
-});
-
-app.get('/index', (req, res) => {
-  const username = req.session.user ? req.session.user.username : 'User'; // Get the username from the session
-  res.render('index', { bikeRankings: res.locals.bikeRankings, username: username });
-});
-
-
-
 app.get('/compare', (req, res) => {
-  const username = req.session.user ? req.session.user.username : 'User';
-  res.render("Comparebike", { username: username });
+  if (!req.session.user) {
+    res.redirect('/');
+    return;
+  }
+  const username = req.session.user.username;
+  res.render("Comparebike", { username });
 });
 
 app.get('/browse', (req, res) => {
-  const username = req.session.user ? req.session.user.username : 'User';
-  res.render("Browsebike", { username: username });
+  if (!req.session.user) {
+    res.redirect('/');
+    return;
+  }
+  const username = req.session.user.username;
+  res.render("Browsebike", { username });
 });
 
 app.get('/aboutus', (req, res) => {
-  const username = req.session.user ? req.session.user.username : 'User';
-  res.render("aboutUs", { username: username });
+  if (!req.session.user) {
+    res.redirect('/');
+    return;
+  }
+  const username = req.session.user.username;
+  res.render("aboutUs", { username });
 });
 
 app.get('/api/bikefeatures/brand/:brandName', async (req, res) => {
@@ -187,7 +192,18 @@ app.get('/bikeDetails', async (req, res) => {
     if (!bike) {
       return res.status(404).json({ message: "Bike not found" });
     }
-    res.render('bikeDetails', { bike: bike }); // Pass the bike object directly to the template
+    const username = req.session.user ? req.session.user.username : 'User';
+
+    // Fetch user's rating for this bike
+    let userRating = null;
+    if (req.session.user) {
+      const userRatingObj = await BikeRatingModel.findOne({ bike: bikeId, user: req.session.user._id });
+      if (userRatingObj) {
+        userRating = userRatingObj.rating;
+      }
+    }
+
+    res.render('bikeDetails', { bike, username, userRating }); // Pass the bike object, username, and userRating to the template
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -209,71 +225,62 @@ app.get('/searchResults', async (req, res) => {
   try {
     const filteredBikes = await BikeModel.find({
       $or: [
-        { brand: { $regex: searchTerm, $options: 'i' } },
-        { variant_name: { $regex: searchTerm, $options: 'i' } }
+        { brand: { $regex: searchTerm, $options: 'i' } }, // Case-insensitive search by brand
+        { model: { $regex: searchTerm, $options: 'i' } }, // Case-insensitive search by model
+        { type: { $regex: searchTerm, $options: 'i' } } // Case-insensitive search by type
       ]
     });
-    res.render('searchResults', { searchResults: filteredBikes });
+
+
+    const username = req.session.user ? req.session.user.username : null;
+    res.render('searchResults', { searchResults: filteredBikes, searchTerm, username }); // Pass the filteredBikes, searchTerm, and username to the template
+  } catch (error) {
+    console.error('Error in /searchResults route:', error);
+    res.status(500).render('error', { message: 'Internal Server Error' }); // Render an error page
+  }
+});
+
+// Route to fetch bike rating for a specific bike
+app.get('/api/bike/rating/:bikeId', async (req, res) => {
+  const bikeId = req.params.bikeId;
+  try {
+    const bikeRating = await BikeRatingModel.findOne({ bike: bikeId });
+    if (!bikeRating) {
+      return res.status(404).json({ message: "Bike rating not found" });
+    }
+    res.json(bikeRating);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
+// Route to post bike rating
 app.post('/api/bike/rate', async (req, res) => {
+  const { bikeId, rating } = req.body;
+  const userId = req.session.user._id; // Assuming user ID is stored in the session
+
   try {
-    const { bikeId, rating } = req.body;
-
-    if (!req.session.user || !req.session.user._id) {
-      return res.status(401).json({ error: 'User not authenticated.' });
+    // Check if the user is authenticated
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized. Please log in to rate bikes." });
     }
-    const userId = req.session.user._id;
 
+    // Update the rating if the user has already rated the bike, otherwise create a new rating entry
     let bikeRating = await BikeRatingModel.findOne({ bike: bikeId, user: userId });
-
     if (bikeRating) {
       bikeRating.rating = rating;
     } else {
-
-      bikeRating = new BikeRatingModel({
-        bike: bikeId,
-        user: userId,
-        rating: rating
-      });
+      bikeRating = new BikeRatingModel({ bike: bikeId, user: userId, rating });
     }
-
     await bikeRating.save();
 
-    res.status(201).send('Rating submitted successfully');
+    res.json(bikeRating); // Return the updated or newly created rating
   } catch (error) {
-    console.error('Error submitting rating:', error);
-    res.status(500).send('Internal Server Error');
-  }
-});
-
-app.get('/api/bike/rankings', async (req, res) => {
-  try {
-    const bikeRankings = res.locals.bikeRankings || [];
-
-
-    res.setHeader('Cache-Control', 'no-cache');
-
-
-    const etag = generateETag(bikeRankings);
-
-
-    res.setHeader('ETag', etag);
-
-    res.json(bikeRankings);
-  } catch (error) {
-    console.error('Error fetching bike rankings:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ message: error.message });
   }
 });
 
 
-function generateETag(data) {
-  const hash = crypto.createHash('md5').update(JSON.stringify(data)).digest('hex');
-  return `"${hash}"`;
-}
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`));
+module.exports = app;

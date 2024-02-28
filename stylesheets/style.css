@@ -1,0 +1,135 @@
+/* Global Styles */
+body {
+  font-family: "Bahnschrift", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9; /* Light gray background */
+}
+
+header {
+  background-color: Green; /* Dark blue header */
+  color: #fff;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.1);
+  transition: 0.5s;
+}
+nav ul {
+  list-style: none;
+  display: flex;
+}
+
+nav li {
+  margin-right: 1rem;
+}
+
+nav a {
+  text-decoration: none;
+  color: #fff;
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  color: #ccc;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* Hero section */
+.hero {
+  text-align: center;
+  padding: 5%;
+  background-color: #ffffff; /* White background */
+}
+
+.search-bar {
+  margin-top: 1rem;
+}
+
+/* Brands and Popular Bikes sections */
+.brands-container,
+.popular-bikes-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  max-width: 1200px;
+  margin: 2rem auto; /* Adjusted margin to center vertically */
+  padding: 20px;
+}
+
+.brands-container .box,
+.popular-bikes-container .box {
+  width: 30%;
+  padding: 10px;
+  background-color: #f9f9f9; /* Light gray background */
+  margin-bottom: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.brands-container .box:hover,
+.popular-bikes-container .box:hover {
+  transform: translateY(-5px);
+}
+
+.brands-container .box .box-img img,
+.popular-bikes-container .box .box-img img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+/* Footer */
+footer {
+  background-color: Green;
+  color: #fff;
+  text-align: center;
+  padding: 2rem;
+  position: static;
+  bottom: 0;
+  width: 100%;
+  height: 1.5rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Media Queries for Responsiveness */
+@media screen and (max-width: 768px) {
+  header {
+    flex-direction: column;
+  }
+
+  nav {
+    margin-top: 1rem;
+  }
+
+  nav li {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero {
+    padding: 10%;
+  }
+
+  .search-bar {
+    margin-top: 0.5rem;
+  }
+
+  .brands-container,
+  .popular-bikes-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .brands-container .box,
+  .popular-bikes-container .box {
+    width: 100%;
+  }
+}
