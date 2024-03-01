@@ -73,12 +73,12 @@ mongoose.connect('mongodb://localhost:27017/WiselyWheel', {
 
 app.use('/api/bikefeatures', bikeRouter);
 
-// Use fetchBikeRankings middleware
+
 app.use(fetchBikeRankings);
 
-// Routes
+
 app.get('/', async (req, res) => {
-  res.render('login_signup_form', { error: null }); // Pass null as error when rendering login/signup form initially
+  res.render('login_signup_form', { error: null });
 });
 
 app.get('/index', async (req, res) => {
@@ -137,10 +137,10 @@ app.post('/signup', async (req, res) => {
 });
 
 app.get('/logout', (req, res) => {
-  
+
   req.session.destroy(err => {
     if (err) {
-      
+
       console.error('Error destroying session:', err);
     }
     res.redirect('/');
@@ -233,13 +233,12 @@ app.get('/searchResults', async (req, res) => {
 
 
     const username = req.session.user ? req.session.user.username : null;
-    res.render('searchResults', { searchResults: filteredBikes, searchTerm, username }); // Pass the filteredBikes, searchTerm, and username to the template
+    res.render('searchResults', { searchResults: filteredBikes, searchTerm, username });
   } catch (error) {
     console.error('Error in /searchResults route:', error);
-    res.status(500).render('error', { message: 'Internal Server Error' }); // Render an error page
+    res.status(500).render('error', { message: 'Internal Server Error' });
   }
 });
-
 // Route to fetch bike rating for a specific bike
 app.get('/api/bike/rating/:bikeId', async (req, res) => {
   const bikeId = req.params.bikeId;
@@ -253,18 +252,15 @@ app.get('/api/bike/rating/:bikeId', async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
 // Route to post bike rating
 app.post('/api/bike/rate', async (req, res) => {
   const { bikeId, rating } = req.body;
   const userId = req.session.user._id; // Assuming user ID is stored in the session
-
   try {
     // Check if the user is authenticated
     if (!userId) {
       return res.status(401).json({ message: "Unauthorized. Please log in to rate bikes." });
     }
-
     // Update the rating if the user has already rated the bike, otherwise create a new rating entry
     let bikeRating = await BikeRatingModel.findOne({ bike: bikeId, user: userId });
     if (bikeRating) {
@@ -273,7 +269,6 @@ app.post('/api/bike/rate', async (req, res) => {
       bikeRating = new BikeRatingModel({ bike: bikeId, user: userId, rating });
     }
     await bikeRating.save();
-
     res.json(bikeRating); // Return the updated or newly created rating
   } catch (error) {
     res.status(500).json({ message: error.message });

@@ -346,12 +346,14 @@
       });
       function confirmLogout() {
         var username = "<%= username %>";
-        if (confirm("Do you want to logout  " + username + "?")) {
+        if (confirm("Are you sure you want to logout, " + username + "?")) {
           window.location.href = "/";
         } else {
+          alert("Thanks for staying");
           return false;
         }
       }
+      
     </script>
     <footer>
       <p>&copy; 2024 WiselyWheel. All rights reserved.</p>
