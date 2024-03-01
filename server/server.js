@@ -194,7 +194,7 @@ app.get('/bikeDetails', async (req, res) => {
     }
     const username = req.session.user ? req.session.user.username : 'User';
 
-    // Fetch user's rating for this bike
+    // Fetch user's Rating for this Bike
     let userRating = null;
     if (req.session.user) {
       const userRatingObj = await BikeRatingModel.findOne({ bike: bikeId, user: req.session.user._id });
