@@ -274,11 +274,14 @@
 
   function confirmLogout() {
     var username = "<%= username %>";
-    if (confirm("Have you made up your mind" + username + "?")) {
+    if (confirm("Are you sure you want to logout, " + username + "?")) {
       window.location.href = "/";
+    } else {
+      alert("Thanks for staying");
       return false;
     }
   }
+  
 </script>
 
 <footer>

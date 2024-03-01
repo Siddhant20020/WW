@@ -97,11 +97,13 @@
         height="100mm"
       />
       <nav>
-        <li><a href="/index">Home</a></li>
-        <li><a href="/browse">Browse Bikes</a></li>
-        <li><a href="/compare">Compare Bikes</a></li>
-        <li><a href="/aboutus">About Us</a></li>
-        <li><a href="#" onclick="confirmLogout()">Logout</a></li>
+        <ul>
+          <li><a href="/index">Home</a></li>
+          <li><a href="/browse">Browse Bikes</a></li>
+          <li><a href="/compare">Compare Bikes</a></li>
+          <li><a href="/aboutus">About Us</a></li>
+          <li><a href="#" onclick="confirmLogout()">Logout</a></li>
+        </ul>
       </nav>
     </header>
 
@@ -177,9 +179,10 @@
       });
       function confirmLogout() {
         var username = "<%= username %>";
-        if (confirm("Have made up your mind  " + username + "?")) {
+        if (confirm("Are you sure you want to logout, " + username + "?")) {
           window.location.href = "/";
         } else {
+          alert("Thanks for staying");
           return false;
         }
       }
