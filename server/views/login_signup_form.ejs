@@ -128,9 +128,9 @@
       <nav>
         <ul>
           <li><a href="/">Home</a></li>
-          <li><a href="/Browsebike.html">Browse Bikes</a></li>
-          <li><a href="/Comparebike.html">Compare Bikes</a></li>
-          <li><a href="/aboutus.html">About Us</a></li>
+          <li><a href="/Browsebike">Browse Bikes</a></li>
+          <li><a href="/Comparebike">Compare Bikes</a></li>
+          <li><a href="/aboutus">About Us</a></li>
         </ul>
       </nav>
     </header>
@@ -157,7 +157,7 @@
         </div>
       </section>
       <% } %>
-    <section class="login-signup">
+    <section id="login-signup-section" class="login-signup">
       <h2 id="formHeading">Login</h2>
       <% if (error) { %>
       <p class="error"><%= error %></p>
@@ -232,6 +232,7 @@
           if (!loggedIn) {
             event.preventDefault();
             alert("To continue, please log in or sign up");
+            window.location.href = "#login-signup-section"; 
           }
         });
       });

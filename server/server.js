@@ -172,6 +172,7 @@ app.get('/aboutus', (req, res) => {
   }
   const username = req.session.user.username;
   res.render("aboutUs", { username });
+
 });
 
 app.get('/api/bikefeatures/brand/:brandName', async (req, res) => {

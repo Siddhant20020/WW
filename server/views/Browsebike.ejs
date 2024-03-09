@@ -6,6 +6,11 @@
     <link rel="stylesheet" href="/stylesheets/style.css" />
     <title>WiselyWheel</title>
     <style>
+      
+      h3 {
+        text-align: center;
+        font-size: 25px;
+      }
       .filters {
         display: flex;
         justify-content: flex-start;
@@ -15,7 +20,7 @@
 
       .filters button {
         padding: 10px 20px;
-        font-size: 16px;
+        font-size: 25px;
         background-color: transparent;
         border: none;
         cursor: pointer;
@@ -73,7 +78,7 @@
       .option button {
         width: 100%;
         padding: 10px;
-        font-size: 16px;
+        font-size: 22px;
         text-align: left;
         border: none;
         background-color: transparent;
@@ -107,7 +112,7 @@
       }
 
       .option button.active {
-        background-color: lightgreen;
+        background-color: green;
         color: white;
         text-decoration: underline;
       }
@@ -160,8 +165,8 @@
 
       .bike-item p {
         margin: 0;
-        font-size: 16px;
-        color: #666;
+        font-size: 22px;
+        color: black;
       }
     </style>
   </head>
@@ -185,7 +190,7 @@
     </header>
 
     <main>
-      <h3>Browse Bike By:</h3>
+      <h3>Browse Bike By</h3>
 
       <div class="filters">
         <button onclick="showBrand()" id="brandBtn" class="active">
@@ -356,7 +361,6 @@
           return false;
         }
       }
-      
     </script>
   </body>
 </html>

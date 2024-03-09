@@ -85,7 +85,7 @@
 
     .bike-price {
       font-size: 16px;
-      color: #777;
+      color: black;
     }
   </style>
   <body>
@@ -130,9 +130,9 @@
           <img src="<%= bike.url %>" alt="<%= bike.variant_name %>" />
           <div class="bike-info">
             <span class="bike-name"
-              ><%= bike.variant_name %> - <%= bike.brand %></span
-            >
-            <span class="bike-price">Rs <%= bike.price %></span>
+              ><%= bike.variant_name %> - <%= bike.brand %>
+            </span>
+            <br /><span class="bike-price">Rs <%= bike.price %></span>
           </div>
         </a>
       </div>

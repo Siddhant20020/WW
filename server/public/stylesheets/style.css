@@ -15,11 +15,12 @@ header {
   align-items: center;
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.1);
   transition: 0.5s;
+  font-size: 25px;
 }
 nav ul {
   list-style: none;
   display: flex;
-  font-size: 23px;
+  font-size: 25px;
 }
 
 nav li {
