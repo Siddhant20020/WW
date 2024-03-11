@@ -147,8 +147,7 @@
       document.addEventListener("DOMContentLoaded", function () {
         const searchForm = document.getElementById("searchForm");
         const searchButton = document.getElementById("searchButton");
-        const brandLogo = document.getElementById("brandLogo");
-
+      
         searchForm.addEventListener("submit", function (event) {
           event.preventDefault();
           const searchTerm = document
@@ -156,22 +155,7 @@
             .value.trim()
             .toLowerCase();
 
-          // Fetch brand logo URL based on search term
-          fetch(`/api/brandLogo?searchTerm=${searchTerm}`)
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.logoUrl) {
-                // Display brand logo
-                brandLogo.innerHTML = `<img src="${data.logoUrl}" alt="Brand Logo" />`;
-                brandLogo.style.display = "block";
-              } else {
-                // Hide brand logo if not found
-                brandLogo.style.display = "none";
-              }
-            })
-            .catch((error) =>
-              console.error("Error fetching brand logo:", error)
-            );
+          
 
           // Redirect to search results page
           window.location.href = `/searchResults?searchTerm=${searchTerm}`;

@@ -185,6 +185,8 @@ app.get('/api/bikefeatures/brand/:brandName', async (req, res) => {
   }
 });
 
+
+
 // Route to handle displaying bike details
 app.get('/bikeDetails', async (req, res) => {
   const bikeId = req.query.id;
@@ -227,7 +229,7 @@ app.get('/searchResults', async (req, res) => {
     const filteredBikes = await BikeModel.find({
       $or: [
         { brand: { $regex: searchTerm, $options: 'i' } }, // Case-insensitive search by brand
-        { model: { $regex: searchTerm, $options: 'i' } }, // Case-insensitive search by model
+        { variant_name: { $regex: searchTerm, $options: 'i' } }, // Case-insensitive search by model
         { type: { $regex: searchTerm, $options: 'i' } } // Case-insensitive search by type
       ]
     });
